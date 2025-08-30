@@ -341,8 +341,304 @@ class PrescriptionAPITester:
             self.log_test("Delete Medication", False, f"Error: {str(e)}")
             return False
     
+    def test_medical_abbreviations_od(self):
+        """Test 9: Enhanced Medical AI - OD (Once Daily) Abbreviation"""
+        try:
+            test_data = {
+                "text": "Tab Dolo 650 OD x 5d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Validate OD = once daily (frequency = 1)
+                    if med['frequency'] == 1 and med['course_duration_days'] == 5:
+                        self.log_test("Medical Abbreviation - OD", True, 
+                                    f"Correctly interpreted OD as frequency=1, duration=5 days")
+                        return True
+                    else:
+                        self.log_test("Medical Abbreviation - OD", False, 
+                                    f"Incorrect interpretation - Freq: {med['frequency']}, Duration: {med['course_duration_days']}")
+                        return False
+                else:
+                    self.log_test("Medical Abbreviation - OD", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("Medical Abbreviation - OD", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Medical Abbreviation - OD", False, f"Error: {str(e)}")
+            return False
+
+    def test_medical_abbreviations_bd(self):
+        """Test 10: Enhanced Medical AI - BD (Twice Daily) Abbreviation"""
+        try:
+            test_data = {
+                "text": "Cap Amoxil 500 BD x 7d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Validate BD = twice daily (frequency = 2)
+                    if med['frequency'] == 2 and med['course_duration_days'] == 7:
+                        self.log_test("Medical Abbreviation - BD", True, 
+                                    f"Correctly interpreted BD as frequency=2, duration=7 days")
+                        return True
+                    else:
+                        self.log_test("Medical Abbreviation - BD", False, 
+                                    f"Incorrect interpretation - Freq: {med['frequency']}, Duration: {med['course_duration_days']}")
+                        return False
+                else:
+                    self.log_test("Medical Abbreviation - BD", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("Medical Abbreviation - BD", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Medical Abbreviation - BD", False, f"Error: {str(e)}")
+            return False
+
+    def test_medical_abbreviations_tds(self):
+        """Test 11: Enhanced Medical AI - TDS (Three Times Daily) Abbreviation"""
+        try:
+            test_data = {
+                "text": "Syr Cetirizine 5ml TDS x 3d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Validate TDS = three times daily (frequency = 3)
+                    if med['frequency'] == 3 and med['course_duration_days'] == 3 and med['form'] == 'syrup':
+                        self.log_test("Medical Abbreviation - TDS", True, 
+                                    f"Correctly interpreted TDS as frequency=3, syrup form, duration=3 days")
+                        return True
+                    else:
+                        self.log_test("Medical Abbreviation - TDS", False, 
+                                    f"Incorrect interpretation - Freq: {med['frequency']}, Form: {med['form']}, Duration: {med['course_duration_days']}")
+                        return False
+                else:
+                    self.log_test("Medical Abbreviation - TDS", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("Medical Abbreviation - TDS", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Medical Abbreviation - TDS", False, f"Error: {str(e)}")
+            return False
+
+    def test_medical_abbreviations_qds(self):
+        """Test 12: Enhanced Medical AI - QDS (Four Times Daily) Abbreviation"""
+        try:
+            test_data = {
+                "text": "Inj Insulin 10u QDS PRN"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Validate QDS = four times daily (frequency = 4)
+                    if med['frequency'] == 4 and med['form'] == 'injection':
+                        self.log_test("Medical Abbreviation - QDS", True, 
+                                    f"Correctly interpreted QDS as frequency=4, injection form")
+                        return True
+                    else:
+                        self.log_test("Medical Abbreviation - QDS", False, 
+                                    f"Incorrect interpretation - Freq: {med['frequency']}, Form: {med['form']}")
+                        return False
+                else:
+                    self.log_test("Medical Abbreviation - QDS", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("Medical Abbreviation - QDS", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Medical Abbreviation - QDS", False, f"Error: {str(e)}")
+            return False
+
+    def test_voice_transcription_support(self):
+        """Test 13: Voice Transcription Parameter Support"""
+        try:
+            test_data = {
+                "voice_transcription": "I need to take Dolo 650 one tablet three times daily for five days"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Validate voice transcription processing
+                    if med['frequency'] == 3 and med['course_duration_days'] == 5:
+                        self.log_test("Voice Transcription Support", True, 
+                                    f"Successfully processed voice input - Freq: {med['frequency']}, Duration: {med['course_duration_days']}")
+                        return True
+                    else:
+                        self.log_test("Voice Transcription Support", False, 
+                                    f"Incorrect processing - Freq: {med['frequency']}, Duration: {med['course_duration_days']}")
+                        return False
+                else:
+                    self.log_test("Voice Transcription Support", False, "No medications extracted from voice input")
+                    return False
+            else:
+                self.log_test("Voice Transcription Support", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Voice Transcription Support", False, f"Error: {str(e)}")
+            return False
+
+    def test_complex_medical_format(self):
+        """Test 14: Complex Medical Format with Mixed Abbreviations"""
+        try:
+            test_data = {
+                "text": "1. Tab Paracetamol 500mg BD AC x 5d\n2. Cap Amoxicillin 250mg TDS PC x 7d\n3. Syr Cough mixture 10ml QDS PRN"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) >= 2:  # Should extract at least 2 medications
+                    # Store medication IDs for cleanup
+                    for med in medications:
+                        if 'id' in med:
+                            self.created_medication_ids.append(med['id'])
+                    
+                    # Check if different frequencies are correctly interpreted
+                    frequencies = [med['frequency'] for med in medications]
+                    if 2 in frequencies and 3 in frequencies:
+                        self.log_test("Complex Medical Format", True, 
+                                    f"Successfully processed complex prescription with {len(medications)} medications")
+                        return True
+                    else:
+                        self.log_test("Complex Medical Format", False, 
+                                    f"Incorrect frequency interpretation - Found frequencies: {frequencies}")
+                        return False
+                else:
+                    self.log_test("Complex Medical Format", False, 
+                                f"Expected multiple medications, got {len(medications)}")
+                    return False
+            else:
+                self.log_test("Complex Medical Format", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Complex Medical Format", False, f"Error: {str(e)}")
+            return False
+
+    def test_medical_context_inference(self):
+        """Test 15: Medical AI Context - Incomplete Prescription Inference"""
+        try:
+            test_data = {
+                "text": "Aspirin for headache, usual dose"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # AI should infer standard aspirin dosage and frequency
+                    if 'aspirin' in med['medicine_name'].lower() and med['frequency'] > 0:
+                        self.log_test("Medical Context Inference", True, 
+                                    f"AI inferred missing data - Medicine: {med['medicine_name']}, Freq: {med['frequency']}")
+                        return True
+                    else:
+                        self.log_test("Medical Context Inference", False, 
+                                    f"Failed to infer - Medicine: {med['medicine_name']}, Freq: {med['frequency']}")
+                        return False
+                else:
+                    self.log_test("Medical Context Inference", False, "No medications extracted from incomplete prescription")
+                    return False
+            else:
+                self.log_test("Medical Context Inference", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Medical Context Inference", False, f"Error: {str(e)}")
+            return False
+
     def test_error_handling(self):
-        """Test 9: Error Handling - Invalid Inputs"""
+        """Test 16: Error Handling - Invalid Inputs"""
         try:
             # Test 1: Empty request
             response = self.session.post(
