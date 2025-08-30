@@ -299,7 +299,7 @@ async def process_prescription(request: PrescriptionProcessRequest):
             dosage=med_data["dosage"],
             frequency=med_data["frequency"],
             times=med_data["times"],
-            course_duration_days=med_data["course_duration_days"],
+            course_duration_days=med_data.get("course_duration_days") or 7,  # Default to 7 days if None
             start_date=med_data["start_date"]
         )
         medications.append(medication)
