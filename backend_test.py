@@ -692,12 +692,21 @@ class PrescriptionAPITester:
         print("=" * 70)
         print()
         
-        # Test sequence
+        # Test sequence - Enhanced with new medical AI features
         tests = [
             self.test_health_check,
             self.test_prescription_processing_text,
             self.test_prescription_processing_text_complex,
             self.test_image_processing_capability,
+            # New Enhanced Medical AI Tests
+            self.test_medical_abbreviations_od,
+            self.test_medical_abbreviations_bd,
+            self.test_medical_abbreviations_tds,
+            self.test_medical_abbreviations_qds,
+            self.test_voice_transcription_support,
+            self.test_complex_medical_format,
+            self.test_medical_context_inference,
+            # Database CRUD Tests
             self.test_get_medications,
             self.test_create_medication,
             self.test_get_specific_medication,
