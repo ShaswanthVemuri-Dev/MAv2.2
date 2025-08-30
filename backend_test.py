@@ -577,7 +577,7 @@ class PrescriptionAPITester:
                     frequencies = [med['frequency'] for med in medications]
                     if 2 in frequencies and 3 in frequencies:
                         self.log_test("Complex Medical Format", True, 
-                                    f"Successfully processed complex prescription with {len(medications)} medications")
+                                    f"Successfully processed complex prescription with {len(medications)} medications, frequencies: {frequencies}")
                         return True
                     else:
                         self.log_test("Complex Medical Format", False, 
