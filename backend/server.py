@@ -45,19 +45,18 @@ def parse_from_mongo(item):
     """Convert string dates/times back to Python objects"""
     if isinstance(item, dict):
         for key, value in item.items():
-            if key.endswith('_date') and isinstance(value, str):
+            # Keep start_date as string for Pydantic model compatibility
+            if key == 'start_date' and isinstance(value, str):
+                # Keep as string - no conversion needed
+                pass
+            elif key.endswith('_date') and isinstance(value, str) and key != 'start_date':
                 try:
                     item[key] = datetime.fromisoformat(value).date()
                 except:
                     pass
             elif key == 'times' and isinstance(value, list):
-                converted_times = []
-                for time_str in value:
-                    try:
-                        converted_times.append(datetime.strptime(time_str, '%H:%M:%S').time())
-                    except:
-                        converted_times.append(time_str)
-                item[key] = converted_times
+                # Keep times as strings for Pydantic model compatibility
+                pass
     return item
 
 # Define Models
