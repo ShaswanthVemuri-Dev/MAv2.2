@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import axios from "axios";
 
@@ -13,10 +13,75 @@ function App() {
   const [processedResult, setProcessedResult] = useState(null);
   const [activeTab, setActiveTab] = useState("input");
   const [previewImage, setPreviewImage] = useState(null);
+  
+  // Voice recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [speechRecognition, setSpeechRecognition] = useState(null);
+  const [audioSupported, setAudioSupported] = useState(false);
 
   useEffect(() => {
     fetchMedications();
+    initializeSpeechRecognition();
   }, []);
+
+  const initializeSpeechRecognition = () => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        setIsRecording(true);
+      };
+      
+      recognition.onresult = (event) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        setVoiceTranscript(finalTranscript + interimTranscript);
+      };
+      
+      recognition.onend = () => {
+        setIsRecording(false);
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsRecording(false);
+      };
+      
+      setSpeechRecognition(recognition);
+      setAudioSupported(true);
+    } else {
+      setAudioSupported(false);
+    }
+  };
+
+  const startRecording = () => {
+    if (speechRecognition && !isRecording) {
+      setVoiceTranscript("");
+      speechRecognition.start();
+    }
+  };
+
+  const stopRecording = () => {
+    if (speechRecognition && isRecording) {
+      speechRecognition.stop();
+    }
+  };
 
   const fetchMedications = async () => {
     try {
@@ -52,8 +117,8 @@ function App() {
   };
 
   const processPrescription = async () => {
-    if (!inputText && !selectedFile) {
-      alert("Please provide either text or upload an image");
+    if (!inputText && !selectedFile && !voiceTranscript) {
+      alert("Please provide text, upload an image, or record voice input");
       return;
     }
 
@@ -68,6 +133,10 @@ function App() {
       
       if (inputText) {
         requestData.text = inputText;
+      }
+
+      if (voiceTranscript) {
+        requestData.voice_transcription = voiceTranscript;
       }
 
       const response = await axios.post(`${API}/process-prescription`, requestData);
@@ -96,6 +165,7 @@ function App() {
     setSelectedFile(null);
     setPreviewImage(null);
     setProcessedResult(null);
+    setVoiceTranscript("");
   };
 
   const formatTime = (timeStr) => {
@@ -113,10 +183,10 @@ function App() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            🏥 Smart Prescription Processor
+            🏥 Advanced Prescription Processor
           </h1>
           <p className="text-gray-600">
-            Upload prescription images or enter text to get organized medication schedules
+            Upload images, enter text, or speak your prescription details for AI-powered processing
           </p>
         </div>
 
@@ -163,13 +233,13 @@ function App() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                📄 Upload or Enter Prescription
+                📄 Multiple Input Methods Available
               </h2>
               
               {/* Image Upload Section */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  📷 Upload Prescription Image
+                  📷 Upload Prescription Image (Enhanced OCR)
                 </label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                   <input
@@ -193,12 +263,73 @@ function App() {
                       <div>
                         <div className="text-6xl mb-3">📷</div>
                         <p className="text-gray-600 mb-2">Click to upload prescription image</p>
-                        <p className="text-sm text-gray-500">PNG, JPG up to 10MB</p>
+                        <p className="text-sm text-gray-500">AI will read even distorted handwriting</p>
                       </div>
                     )}
                   </label>
                 </div>
               </div>
+
+              {/* Voice Input Section */}
+              {audioSupported && (
+                <div className="mb-8">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    🎤 Voice Input (Speak Your Prescription)
+                  </label>
+                  <div className="border border-gray-300 rounded-lg p-4">
+                    <div className="flex items-center gap-4 mb-4">
+                      <button
+                        onClick={startRecording}
+                        disabled={isRecording || processing}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                          isRecording
+                            ? "bg-red-500 text-white"
+                            : "bg-green-500 hover:bg-green-600 text-white disabled:bg-gray-400"
+                        }`}
+                      >
+                        {isRecording ? (
+                          <>
+                            🔴 Recording...
+                          </>
+                        ) : (
+                          <>
+                            🎤 Start Recording
+                          </>
+                        )}
+                      </button>
+                      
+                      {isRecording && (
+                        <button
+                          onClick={stopRecording}
+                          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium"
+                        >
+                          ⏹️ Stop
+                        </button>
+                      )}
+                      
+                      {voiceTranscript && (
+                        <button
+                          onClick={() => setVoiceTranscript("")}
+                          className="px-3 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm"
+                        >
+                          🗑️ Clear
+                        </button>
+                      )}
+                    </div>
+                    
+                    {voiceTranscript && (
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <p className="text-sm font-medium text-gray-700 mb-1">Transcribed:</p>
+                        <p className="text-gray-800">{voiceTranscript}</p>
+                      </div>
+                    )}
+                    
+                    <p className="text-xs text-gray-500 mt-2">
+                      Example: "I need to take Dolo 650 one tablet three times daily for five days"
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Divider */}
               <div className="flex items-center my-8">
@@ -210,31 +341,34 @@ function App() {
               {/* Text Input Section */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  ✏️ Enter Prescription Text
+                  ✏️ Enter Prescription Text (Supports Medical Abbreviations)
                 </label>
                 <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter prescription details like:&#10;Dolo 650 - 1 tablet - 3 times daily - 5 days&#10;Amoxicillin 500mg - 1 capsule - twice daily - 7 days"
+                  placeholder="Enter prescription details like:&#10;Tab Dolo 650 OD x 5d&#10;Cap Amoxil 500 BD x 7d&#10;Syr Cetirizine 5ml TDS x 3d&#10;&#10;Supports medical abbreviations: OD, BD, TDS, QDS, etc."
                 />
+                <p className="text-xs text-gray-500 mt-2">
+                  AI understands medical abbreviations: OD (once daily), BD (twice daily), TDS (three times), etc.
+                </p>
               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-4 justify-center">
                 <button
                   onClick={processPrescription}
-                  disabled={processing || (!inputText && !selectedFile)}
+                  disabled={processing || (!inputText && !selectedFile && !voiceTranscript)}
                   className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-semibold py-3 px-8 rounded-lg transition-colors flex items-center gap-2"
                 >
                   {processing ? (
                     <>
                       <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                      Processing...
+                      Processing with Medical AI...
                     </>
                   ) : (
                     <>
-                      🔄 Process Prescription
+                      🧠 Process with AI
                     </>
                   )}
                 </button>
@@ -242,9 +376,19 @@ function App() {
                   onClick={clearInput}
                   className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
                 >
-                  🗑️ Clear
+                  🗑️ Clear All
                 </button>
               </div>
+
+              {/* Processing Info */}
+              {processing && (
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-blue-800 text-sm">
+                    <strong>Advanced Processing:</strong> Using medical AI to analyze prescription, extract drug names, 
+                    dosages, frequencies, and create optimal medication schedules...
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -266,7 +410,7 @@ function App() {
                 {medications.map((medication) => (
                   <div
                     key={medication.id}
-                    className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+                    className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow medication-card"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
@@ -301,7 +445,7 @@ function App() {
                           {medication.times.map((time, index) => (
                             <span
                               key={index}
-                              className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+                              className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full time-badge"
                             >
                               {formatTime(time)}
                             </span>
@@ -321,7 +465,7 @@ function App() {
                     </div>
                     
                     <div
-                      className="mt-4 h-2 rounded-full"
+                      className="mt-4 h-2 rounded-full color-indicator"
                       style={{ backgroundColor: medication.color }}
                     ></div>
                   </div>
@@ -336,12 +480,12 @@ function App() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                ✅ Processing Results
+                ✅ AI Processing Results
               </h2>
               
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg success-border">
                 <p className="text-green-800">
-                  <strong>Success!</strong> Processed {processedResult.medications.length} medication(s) from your prescription.
+                  <strong>Success!</strong> Processed {processedResult.medications.length} medication(s) with medical AI.
                 </p>
                 <p className="text-green-600 text-sm mt-1">{processedResult.processing_notes}</p>
               </div>
@@ -385,7 +529,7 @@ function App() {
                         {medication.times.map((time, timeIndex) => (
                           <span
                             key={timeIndex}
-                            className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+                            className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full time-badge"
                           >
                             {formatTime(time)}
                           </span>

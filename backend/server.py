@@ -89,6 +89,7 @@ class MedicationScheduleCreate(BaseModel):
 class PrescriptionProcessRequest(BaseModel):
     text: Optional[str] = None
     image_base64: Optional[str] = None
+    voice_transcription: Optional[str] = None
 
 class ProcessedPrescription(BaseModel):
     medications: List[MedicationSchedule]
@@ -100,6 +101,7 @@ DRUG_FORM_ICONS = {
     "tablet": "💊",
     "capsule": "💊",
     "syrup": "🍯",
+    "liquid": "🍯",
     "injection": "💉",
     "ointment": "🧴",
     "cream": "🧴",
@@ -108,7 +110,10 @@ DRUG_FORM_ICONS = {
     "patch": "🩹",
     "powder": "⚪",
     "gel": "🧴",
-    "spray": "💨"
+    "spray": "💨",
+    "lotion": "🧴",
+    "suppository": "⚪",
+    "solution": "🍯"
 }
 
 # Common drug colors
@@ -121,11 +126,13 @@ DRUG_COLORS = {
     "pink": "#EC4899",
     "orange": "#F97316",
     "purple": "#8B5CF6",
-    "brown": "#A3A3A3"
+    "brown": "#A3A3A3",
+    "clear": "#F8FAFC",
+    "transparent": "#F8FAFC"
 }
 
-async def process_prescription_with_ai(text: str = None, image_base64: str = None) -> dict:
-    """Process prescription using AI vision/text processing"""
+async def process_prescription_with_ai(text: str = None, image_base64: str = None, voice_transcription: str = None) -> dict:
+    """Process prescription using AI with enhanced medical context"""
     try:
         api_key = os.environ.get('EMERGENT_LLM_KEY')
         if not api_key:
@@ -134,59 +141,107 @@ async def process_prescription_with_ai(text: str = None, image_base64: str = Non
         # Create unique session ID for this processing
         session_id = f"prescription_{uuid.uuid4()}"
         
-        system_message = """You are a medical prescription processing AI. Your job is to extract structured medication information from prescription text or images.
+        # Enhanced system message with medical-specific context
+        system_message = """You are a specialized Medical Prescription Processing AI with expertise in:
+- Medical terminology and drug nomenclature
+- Prescription formats and doctor handwriting patterns
+- Dosage calculations and frequency interpretations
+- Drug forms, routes of administration, and scheduling
 
-Extract the following information for each medication:
-1. Medicine name (generic and brand name if available)
-2. Form (tablet, capsule, syrup, injection, ointment, etc.)
-3. Dosage (strength and quantity per dose)
-4. Frequency (how many times per day)
-5. Suggested times (based on frequency - distribute evenly through the day)
-6. Course duration in days
-7. Start date (if mentioned, otherwise assume today)
+CORE MEDICAL KNOWLEDGE:
+- Common drug names (generic and brand): Paracetamol/Acetaminophen/Tylenol, Amoxicillin, Ibuprofen, etc.
+- Dosage forms: tablets, capsules, syrup, injection, ointment, cream, drops, inhaler, patch, powder, gel, spray
+- Frequency patterns: OD (once daily), BD/BID (twice daily), TDS/TID (three times daily), QDS/QID (four times daily)
+- Medical abbreviations: mg, ml, mcg, IU, PRN (as needed), AC (before meals), PC (after meals)
 
-For colors, try to infer from common drug appearances or default to white.
+EXTRACTION RULES FOR PRESCRIPTIONS:
+1. **Medicine Name**: Extract both generic and brand names, normalize spelling variations
+2. **Strength/Dosage**: Include unit (mg, ml, mcg) and quantity per dose
+3. **Form**: Identify tablet, capsule, syrup, etc. from context or explicit mention
+4. **Frequency**: Convert medical abbreviations to daily count (BD=2, TDS=3, QDS=4)
+5. **Duration**: Extract days, weeks, or "until finished"
+6. **Schedule**: Generate optimal timing based on frequency (evenly distributed)
+
+HANDLE POOR QUALITY/DISTORTED TEXT:
+- Use medical context to interpret unclear handwriting
+- Recognize common prescription patterns even with spelling errors
+- Infer missing information based on standard medical practices
+- Flag uncertain extractions in processing_notes
+
+For images: First extract ALL readable text (including partial/unclear words), then apply medical knowledge to interpret and complete the prescription information.
 
 Return ONLY a JSON object in this exact format:
 {
   "medications": [
     {
-      "medicine_name": "string",
-      "display_name": "string (form + color description)",
-      "form": "string",
-      "dosage": "string", 
-      "frequency": integer,
-      "times": ["HH:MM", "HH:MM"],
+      "medicine_name": "Primary drug name (generic preferred)",
+      "display_name": "Form + Color description (e.g., 'White Tablet', 'Red Syrup')",
+      "form": "tablet|capsule|syrup|injection|ointment|cream|drops|inhaler|patch|powder|gel|spray",
+      "dosage": "Complete dosage with units (e.g., '500mg per tablet', '5ml')", 
+      "frequency": integer (times per day),
+      "times": ["HH:MM format times evenly distributed"],
       "course_duration_days": integer,
-      "start_date": "YYYY-MM-DD",
-      "color": "color_name"
+      "start_date": "Today's date in YYYY-MM-DD format",
+      "color": "inferred or default color name"
     }
   ],
-  "raw_text": "extracted or provided text",
-  "processing_notes": "any notes about processing"
+  "raw_text": "All extracted text from image/input",
+  "processing_notes": "Medical interpretation notes, confidence level, any uncertainties"
 }
 
-If processing an image, first extract all readable text, then process as above."""
+COMMON MEDICAL PATTERNS TO RECOGNIZE:
+- "Tab Dolo 650 1 OD x 5d" = Paracetamol 650mg tablet, once daily, 5 days
+- "Cap Amoxil 500 BD x 7d" = Amoxicillin 500mg capsule, twice daily, 7 days  
+- "Syr Cetirizine 5ml TDS x 3d" = Cetirizine syrup 5ml, three times daily, 3 days
 
-        # Initialize chat with GPT-4o (vision model for maximum efficiency)
+Focus on medical accuracy and patient safety in your extractions."""
+
+        # Initialize chat with GPT-4o (vision model for maximum medical processing efficiency)
         chat = LlmChat(
             api_key=api_key,
             session_id=session_id,
             system_message=system_message
         ).with_model("openai", "gpt-4o")
 
+        # Prepare input text
+        input_content = ""
+        if voice_transcription:
+            input_content = f"Voice transcription: {voice_transcription}"
+        elif text:
+            input_content = f"Prescription text: {text}"
+
         # Create user message
         if image_base64:
-            # Process image
+            # Enhanced prompt for image processing with medical context
             image_content = ImageContent(image_base64=image_base64)
             user_message = UserMessage(
-                text="Please extract and process the prescription information from this image.",
+                text=f"""Analyze this prescription image with maximum medical accuracy. 
+
+INSTRUCTIONS:
+1. Extract ALL readable text, including partially visible words
+2. Use medical knowledge to interpret unclear handwriting/print
+3. Recognize common prescription abbreviations and formats
+4. Apply context to complete partial information
+5. Provide confidence assessment for each extraction
+
+Additional context: {input_content if input_content else 'No additional context'}
+
+Focus on: Medicine names, dosages, frequencies, duration, and any special instructions.""",
                 file_contents=[image_content]
             )
         else:
-            # Process text
+            # Process text or voice transcription
             user_message = UserMessage(
-                text=f"Please extract and process the prescription information from this text: {text}"
+                text=f"""Process this prescription information with medical expertise:
+
+{input_content}
+
+Apply medical knowledge to:
+1. Normalize drug names to standard forms
+2. Convert abbreviations to full specifications  
+3. Calculate optimal dosing schedules
+4. Infer missing but standard information
+5. Ensure medical safety and accuracy"""
             )
 
         # Send message and get response
@@ -213,16 +268,16 @@ If processing an image, first extract all readable text, then process as above."
 # Routes
 @api_router.get("/")
 async def root():
-    return {"message": "Prescription Processing API"}
+    return {"message": "Advanced Prescription Processing API with Medical AI"}
 
 @api_router.post("/process-prescription", response_model=ProcessedPrescription)
 async def process_prescription(request: PrescriptionProcessRequest):
-    """Process prescription from text or image and return structured medication data"""
-    if not request.text and not request.image_base64:
-        raise HTTPException(status_code=400, detail="Either text or image_base64 must be provided")
+    """Process prescription from text, voice, or image and return structured medication data"""
+    if not request.text and not request.image_base64 and not request.voice_transcription:
+        raise HTTPException(status_code=400, detail="Either text, voice_transcription, or image_base64 must be provided")
     
-    # Process with AI
-    ai_result = await process_prescription_with_ai(request.text, request.image_base64)
+    # Process with enhanced medical AI
+    ai_result = await process_prescription_with_ai(request.text, request.image_base64, request.voice_transcription)
     
     # Convert to our models and enhance with icons/colors
     medications = []
@@ -256,8 +311,8 @@ async def process_prescription(request: PrescriptionProcessRequest):
     
     return ProcessedPrescription(
         medications=medications,
-        raw_text=ai_result.get("raw_text", request.text or "Image processed"),
-        processing_notes=ai_result.get("processing_notes", "Processed successfully")
+        raw_text=ai_result.get("raw_text", request.text or request.voice_transcription or "Image processed"),
+        processing_notes=ai_result.get("processing_notes", "Processed with advanced medical AI")
     )
 
 @api_router.get("/medications", response_model=List[MedicationSchedule])
