@@ -672,6 +672,354 @@ class PrescriptionAPITester:
         except Exception as e:
             self.log_test("Error Handling", False, f"Error: {str(e)}")
             return False
+
+    def test_svg_icon_system_dolo650(self):
+        """Test 17: SVG Icon System - Dolo 650 Processing"""
+        try:
+            test_data = {
+                "text": "Tab Dolo 650 OD x 5d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Check SVG icon system
+                    has_svg = 'icon_svg' in med and med['icon_svg'] == "/icons/medications/tablet.svg"
+                    has_med_color = 'medication_color' in med
+                    has_bg_color = 'background_color' in med
+                    no_old_icon = 'icon' not in med
+                    no_old_color = 'color' not in med
+                    
+                    if has_svg and has_med_color and has_bg_color and no_old_icon and no_old_color:
+                        self.log_test("SVG Icon System - Dolo 650", True, 
+                                    f"SVG: {med['icon_svg']}, Med Color: {med['medication_color']}, BG Color: {med['background_color']}")
+                        return True
+                    else:
+                        self.log_test("SVG Icon System - Dolo 650", False, 
+                                    f"Missing fields - SVG: {has_svg}, Med Color: {has_med_color}, BG Color: {has_bg_color}, No old icon: {no_old_icon}, No old color: {no_old_color}")
+                        return False
+                else:
+                    self.log_test("SVG Icon System - Dolo 650", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("SVG Icon System - Dolo 650", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("SVG Icon System - Dolo 650", False, f"Error: {str(e)}")
+            return False
+
+    def test_dual_color_detection_dolo650(self):
+        """Test 18: Dual Color Detection - Dolo 650 Expected Colors"""
+        try:
+            test_data = {
+                "text": "Tab Dolo 650 OD x 5d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Expected: medication_color=white (#FFFFFF), background_color=blue (#3B82F6)
+                    expected_med_color = "#FFFFFF"
+                    expected_bg_color = "#3B82F6"
+                    
+                    actual_med_color = med.get('medication_color')
+                    actual_bg_color = med.get('background_color')
+                    
+                    if actual_med_color == expected_med_color and actual_bg_color == expected_bg_color:
+                        self.log_test("Dual Color Detection - Dolo 650", True, 
+                                    f"Correct colors - Med: {actual_med_color} (white), BG: {actual_bg_color} (blue)")
+                        return True
+                    else:
+                        self.log_test("Dual Color Detection - Dolo 650", False, 
+                                    f"Incorrect colors - Expected Med: {expected_med_color}, Got: {actual_med_color}; Expected BG: {expected_bg_color}, Got: {actual_bg_color}")
+                        return False
+                else:
+                    self.log_test("Dual Color Detection - Dolo 650", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("Dual Color Detection - Dolo 650", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Dual Color Detection - Dolo 650", False, f"Error: {str(e)}")
+            return False
+
+    def test_dual_color_detection_amoxicillin(self):
+        """Test 19: Dual Color Detection - Amoxicillin Expected Colors"""
+        try:
+            test_data = {
+                "text": "Cap Amoxicillin 500mg BD x 7d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) > 0:
+                    med = medications[0]
+                    # Store medication ID for cleanup
+                    if 'id' in med:
+                        self.created_medication_ids.append(med['id'])
+                    
+                    # Expected: medication_color should be pink/red, background_color=silver
+                    expected_bg_color = "#D1D5DB"  # silver
+                    actual_med_color = med.get('medication_color')
+                    actual_bg_color = med.get('background_color')
+                    
+                    # Check if medication color is pink or red (common for Amoxicillin)
+                    pink_colors = ["#EC4899", "#EF4444"]  # pink, red
+                    med_color_correct = actual_med_color in pink_colors
+                    bg_color_correct = actual_bg_color == expected_bg_color
+                    
+                    if med_color_correct and bg_color_correct:
+                        self.log_test("Dual Color Detection - Amoxicillin", True, 
+                                    f"Correct colors - Med: {actual_med_color} (pink/red), BG: {actual_bg_color} (silver)")
+                        return True
+                    else:
+                        self.log_test("Dual Color Detection - Amoxicillin", False, 
+                                    f"Incorrect colors - Med: {actual_med_color} (expected pink/red), BG: {actual_bg_color} (expected silver {expected_bg_color})")
+                        return False
+                else:
+                    self.log_test("Dual Color Detection - Amoxicillin", False, "No medications extracted")
+                    return False
+            else:
+                self.log_test("Dual Color Detection - Amoxicillin", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("Dual Color Detection - Amoxicillin", False, f"Error: {str(e)}")
+            return False
+
+    def test_svg_icon_forms_mapping(self):
+        """Test 20: SVG Icon Forms - Different Medication Forms"""
+        try:
+            test_cases = [
+                {"text": "Tab Paracetamol 500mg OD", "expected_form": "tablet", "expected_svg": "/icons/medications/tablet.svg"},
+                {"text": "Cap Amoxicillin 250mg BD", "expected_form": "capsule", "expected_svg": "/icons/medications/capsule.svg"},
+                {"text": "Syr Cetirizine 5ml TDS", "expected_form": "syrup", "expected_svg": "/icons/medications/syrup.svg"},
+                {"text": "Inj Insulin 10u QDS", "expected_form": "injection", "expected_svg": "/icons/medications/injection.svg"}
+            ]
+            
+            all_passed = True
+            results = []
+            
+            for i, test_case in enumerate(test_cases):
+                response = self.session.post(
+                    f"{API_BASE_URL}/process-prescription",
+                    json={"text": test_case["text"]},
+                    headers={"Content-Type": "application/json"}
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    medications = data.get('medications', [])
+                    if len(medications) > 0:
+                        med = medications[0]
+                        # Store medication ID for cleanup
+                        if 'id' in med:
+                            self.created_medication_ids.append(med['id'])
+                        
+                        actual_form = med.get('form')
+                        actual_svg = med.get('icon_svg')
+                        
+                        form_correct = actual_form == test_case["expected_form"]
+                        svg_correct = actual_svg == test_case["expected_svg"]
+                        
+                        if form_correct and svg_correct:
+                            results.append(f"✓ {test_case['expected_form']}: {actual_svg}")
+                        else:
+                            results.append(f"✗ {test_case['expected_form']}: got form={actual_form}, svg={actual_svg}")
+                            all_passed = False
+                    else:
+                        results.append(f"✗ {test_case['expected_form']}: No medications extracted")
+                        all_passed = False
+                else:
+                    results.append(f"✗ {test_case['expected_form']}: HTTP {response.status_code}")
+                    all_passed = False
+            
+            if all_passed:
+                self.log_test("SVG Icon Forms Mapping", True, f"All forms mapped correctly: {'; '.join(results)}")
+                return True
+            else:
+                self.log_test("SVG Icon Forms Mapping", False, f"Some forms failed: {'; '.join(results)}")
+                return False
+                
+        except Exception as e:
+            self.log_test("SVG Icon Forms Mapping", False, f"Error: {str(e)}")
+            return False
+
+    def test_crud_operations_new_schema(self):
+        """Test 21: CRUD Operations with New SVG Schema"""
+        try:
+            # Test GET /medications returns new schema fields
+            response = self.session.get(f"{API_BASE_URL}/medications")
+            
+            if response.status_code == 200:
+                medications = response.json()
+                if isinstance(medications, list) and len(medications) > 0:
+                    # Check if any medication has the new schema
+                    has_new_schema = False
+                    has_old_fields = False
+                    
+                    for med in medications:
+                        if 'icon_svg' in med and 'medication_color' in med and 'background_color' in med:
+                            has_new_schema = True
+                        if 'icon' in med or 'color' in med:
+                            has_old_fields = True
+                    
+                    if has_new_schema and not has_old_fields:
+                        self.log_test("CRUD Operations - New Schema", True, 
+                                    f"All medications use new schema (icon_svg, medication_color, background_color)")
+                        return True
+                    elif has_new_schema and has_old_fields:
+                        self.log_test("CRUD Operations - New Schema", False, 
+                                    "Mixed schema detected - some medications still have old 'icon' and 'color' fields")
+                        return False
+                    else:
+                        self.log_test("CRUD Operations - New Schema", False, 
+                                    "No medications found with new schema fields")
+                        return False
+                else:
+                    # No medications in database, create one to test
+                    test_medication = {
+                        "medicine_name": "Schema Test Medicine",
+                        "display_name": "Schema Test - White Tablet on Blue Strip",
+                        "form": "tablet",
+                        "icon_svg": "/icons/medications/tablet.svg",
+                        "medication_color": "#FFFFFF",
+                        "background_color": "#3B82F6",
+                        "dosage": "500mg",
+                        "frequency": 1,
+                        "times": ["08:00"],
+                        "course_duration_days": 5,
+                        "start_date": "2025-01-01"
+                    }
+                    
+                    create_response = self.session.post(
+                        f"{API_BASE_URL}/medications",
+                        json=test_medication,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    
+                    if create_response.status_code == 200:
+                        created_med = create_response.json()
+                        if 'id' in created_med:
+                            self.created_medication_ids.append(created_med['id'])
+                        
+                        # Check if created medication has new schema
+                        has_svg = 'icon_svg' in created_med
+                        has_med_color = 'medication_color' in created_med
+                        has_bg_color = 'background_color' in created_med
+                        no_old_icon = 'icon' not in created_med
+                        no_old_color = 'color' not in created_med
+                        
+                        if has_svg and has_med_color and has_bg_color and no_old_icon and no_old_color:
+                            self.log_test("CRUD Operations - New Schema", True, 
+                                        "Created medication uses new schema correctly")
+                            return True
+                        else:
+                            self.log_test("CRUD Operations - New Schema", False, 
+                                        f"Created medication has schema issues - SVG: {has_svg}, Med Color: {has_med_color}, BG Color: {has_bg_color}")
+                            return False
+                    else:
+                        self.log_test("CRUD Operations - New Schema", False, 
+                                    f"Failed to create test medication: HTTP {create_response.status_code}")
+                        return False
+            else:
+                self.log_test("CRUD Operations - New Schema", False, 
+                            f"Failed to get medications: HTTP {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("CRUD Operations - New Schema", False, f"Error: {str(e)}")
+            return False
+
+    def test_ai_processing_multiple_medications(self):
+        """Test 22: AI Processing - Multiple Medications with SVG and Colors"""
+        try:
+            test_data = {
+                "text": "1. Tab Dolo 650 OD x 5d\n2. Cap Amoxicillin 500mg BD x 7d\n3. Syr Cetirizine 5ml TDS x 3d"
+            }
+            
+            response = self.session.post(
+                f"{API_BASE_URL}/process-prescription",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                medications = data.get('medications', [])
+                if len(medications) >= 3:
+                    # Store medication IDs for cleanup
+                    for med in medications:
+                        if 'id' in med:
+                            self.created_medication_ids.append(med['id'])
+                    
+                    # Check each medication has proper SVG and colors
+                    all_valid = True
+                    results = []
+                    
+                    for i, med in enumerate(medications[:3]):  # Check first 3
+                        has_svg = 'icon_svg' in med and med['icon_svg'].startswith('/icons/medications/')
+                        has_med_color = 'medication_color' in med and med['medication_color'].startswith('#')
+                        has_bg_color = 'background_color' in med and med['background_color'].startswith('#')
+                        
+                        if has_svg and has_med_color and has_bg_color:
+                            results.append(f"Med {i+1}: ✓ {med['form']} - {med['icon_svg']}")
+                        else:
+                            results.append(f"Med {i+1}: ✗ Missing fields")
+                            all_valid = False
+                    
+                    if all_valid:
+                        self.log_test("AI Processing - Multiple Medications", True, 
+                                    f"All {len(medications)} medications have proper SVG and colors: {'; '.join(results)}")
+                        return True
+                    else:
+                        self.log_test("AI Processing - Multiple Medications", False, 
+                                    f"Some medications missing fields: {'; '.join(results)}")
+                        return False
+                else:
+                    self.log_test("AI Processing - Multiple Medications", False, 
+                                f"Expected 3+ medications, got {len(medications)}")
+                    return False
+            else:
+                self.log_test("AI Processing - Multiple Medications", False, f"HTTP {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_test("AI Processing - Multiple Medications", False, f"Error: {str(e)}")
+            return False
     
     def cleanup_test_data(self):
         """Clean up any remaining test medications"""
