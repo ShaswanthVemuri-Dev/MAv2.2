@@ -65,8 +65,9 @@ class MedicationSchedule(BaseModel):
     medicine_name: str
     display_name: str
     form: str  # tablet, capsule, syrup, injection, ointment, etc.
-    icon: str  # emoji or icon identifier
-    color: str
+    icon_svg: str  # SVG file path or identifier
+    medication_color: str  # actual medication/pill color (hex)
+    background_color: str  # packaging/sheet color (hex)
     dosage: str
     frequency: int  # times per day
     times: List[str]  # list of time strings like ["08:00", "14:00", "20:00"]
@@ -78,8 +79,9 @@ class MedicationScheduleCreate(BaseModel):
     medicine_name: str
     display_name: str
     form: str
-    icon: str
-    color: str
+    icon_svg: str
+    medication_color: str
+    background_color: str
     dosage: str
     frequency: int
     times: List[str]
