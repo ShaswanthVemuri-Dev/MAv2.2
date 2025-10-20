@@ -98,28 +98,28 @@ class ProcessedPrescription(BaseModel):
     raw_text: str
     processing_notes: str
 
-# Drug form to icon mapping
+# Drug form to SVG icon mapping
 DRUG_FORM_ICONS = {
-    "tablet": "💊",
-    "capsule": "💊",
-    "syrup": "🍯",
-    "liquid": "🍯",
-    "injection": "💉",
-    "ointment": "🧴",
-    "cream": "🧴",
-    "drops": "💧",
-    "inhaler": "💨",
-    "patch": "🩹",
-    "powder": "⚪",
-    "gel": "🧴",
-    "spray": "💨",
-    "lotion": "🧴",
-    "suppository": "⚪",
-    "solution": "🍯"
+    "tablet": "/icons/medications/tablet.svg",
+    "capsule": "/icons/medications/capsule.svg",
+    "syrup": "/icons/medications/syrup.svg",
+    "liquid": "/icons/medications/liquid.svg",
+    "injection": "/icons/medications/injection.svg",
+    "ointment": "/icons/medications/ointment.svg",
+    "cream": "/icons/medications/cream.svg",
+    "drops": "/icons/medications/drops.svg",
+    "inhaler": "/icons/medications/inhaler.svg",
+    "patch": "/icons/medications/patch.svg",
+    "powder": "/icons/medications/powder.svg",
+    "gel": "/icons/medications/gel.svg",
+    "spray": "/icons/medications/spray.svg",
+    "lotion": "/icons/medications/lotion.svg",
+    "suppository": "/icons/medications/suppository.svg",
+    "solution": "/icons/medications/solution.svg"
 }
 
-# Common drug colors
-DRUG_COLORS = {
+# Common medication and packaging colors
+COLOR_MAP = {
     "white": "#FFFFFF",
     "blue": "#3B82F6",
     "red": "#EF4444",
@@ -128,9 +128,20 @@ DRUG_COLORS = {
     "pink": "#EC4899",
     "orange": "#F97316",
     "purple": "#8B5CF6",
-    "brown": "#A3A3A3",
+    "brown": "#A57C5A",
     "clear": "#F8FAFC",
-    "transparent": "#F8FAFC"
+    "transparent": "#F8FAFC",
+    "silver": "#D1D5DB",
+    "gold": "#FCD34D",
+    "cream": "#FEF3C7",
+    "beige": "#F5F5DC",
+    "maroon": "#991B1B",
+    "grey": "#9CA3AF",
+    "gray": "#9CA3AF",
+    "light blue": "#93C5FD",
+    "dark blue": "#1E40AF",
+    "light green": "#86EFAC",
+    "dark green": "#065F46"
 }
 
 async def process_prescription_with_ai(text: str = None, image_base64: str = None, voice_transcription: str = None) -> dict:
