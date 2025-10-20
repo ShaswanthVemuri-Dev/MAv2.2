@@ -1,6 +1,28 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M9 6H15V9H9V6Z" fill="currentColor" fill-opacity="0.7" rx="1"/>
-  <path d="M8 9H16C16.5523 9 17 9.44772 17 10V18C17 19.1046 16.1046 20 15 20H9C7.89543 20 7 19.1046 7 18V10C7 9.44772 7.44772 9 8 9Z" fill="currentColor" fill-opacity="0.9"/>
-  <path d="M10 13C10 13 11 14 12 14C13 14 14 13 14 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
-  <path d="M10 16C10 16 11 17 12 17C13 17 14 16 14 16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+  <!-- Tube shadow -->
+  <rect x="7.5" y="7.5" width="9" height="13" rx="1.5" fill="#1a1a1a" opacity="0.1"/>
+  <!-- Tube cap -->
+  <rect x="10" y="5" width="4" height="2.5" rx="1" fill="currentColor" stroke="#1a1a1a" stroke-width="1"/>
+  <ellipse cx="12" cy="5" rx="1.5" ry="0.8" fill="white" opacity="0.3"/>
+  <!-- Flip-top mechanism -->
+  <path d="M10.5 7 L11 7.5 L13 7.5 L13.5 7 Z" fill="currentColor" stroke="#1a1a1a" stroke-width="0.8"/>
+  <line x1="12" y1="7.5" x2="12" y2="8" stroke="#1a1a1a" stroke-width="0.6"/>
+  <!-- Main tube body -->
+  <rect x="7" y="8" width="10" height="12" rx="1.5" fill="currentColor" stroke="#1a1a1a" stroke-width="1.2"/>
+  <!-- Squeeze marks/texture -->
+  <path d="M7 13 Q8 12.5 9 13 Q10 13.5 11 13 Q12 12.5 13 13 Q14 13.5 15 13 Q16 12.5 17 13" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.3"/>
+  <path d="M7 15 Q8 14.5 9 15 Q10 15.5 11 15 Q12 14.5 13 15 Q14 15.5 15 15 Q16 14.5 17 15" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.3"/>
+  <path d="M7 17 Q8 16.5 9 17 Q10 17.5 11 17 Q12 16.5 13 17 Q14 17.5 15 17 Q16 16.5 17 17" fill="none" stroke="#1a1a1a" stroke-width="0.5" opacity="0.3"/>
+  <!-- Label -->
+  <rect x="8.5" y="9.5" width="7" height="3.5" rx="0.5" fill="white" opacity="0.8" stroke="#1a1a1a" stroke-width="0.5"/>
+  <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#1a1a1a" stroke-width="0.6"/>
+  <line x1="9" y1="11.5" x2="14" y2="11.5" stroke="#1a1a1a" stroke-width="0.5" opacity="0.6"/>
+  <line x1="9" y1="12.3" x2="13" y2="12.3" stroke="#1a1a1a" stroke-width="0.5" opacity="0.6"/>
+  <!-- Gel transparency effect -->
+  <rect x="8" y="9" width="1.5" height="9" fill="white" opacity="0.4" rx="0.5"/>
+  <!-- Tube crimp at bottom -->
+  <path d="M7 18 L9 19 L11 18 L13 19 L15 18 L17 19 L17 19.5 L7 19.5 Z" fill="#1a1a1a" opacity="0.15" stroke="#1a1a1a" stroke-width="0.5"/>
+  <line x1="8" y1="19.2" x2="16" y2="19.2" stroke="#1a1a1a" stroke-width="0.8"/>
+  <!-- Volume indicator -->
+  <text x="15.5" y="11" font-size="1.8" fill="#1a1a1a" opacity="0.5">30g</text>
 </svg>

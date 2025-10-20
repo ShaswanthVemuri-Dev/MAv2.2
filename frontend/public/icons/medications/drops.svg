@@ -1,5 +1,23 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 3C12 3 7 9 7 13C7 15.7614 9.23858 18 12 18C14.7614 18 17 15.7614 17 13C17 9 12 3 12 3Z" fill="currentColor" fill-opacity="0.9"/>
-  <path d="M10 11C10 11 9 12 9 13C9 13.5523 9.44772 14 10 14" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
-  <circle cx="12" cy="20" r="1.5" fill="currentColor" fill-opacity="0.5"/>
+  <!-- Dropper bottle -->
+  <rect x="9" y="10" width="6" height="9" rx="1.5" fill="currentColor" opacity="0.3" stroke="#1a1a1a" stroke-width="1.2"/>
+  <!-- Dropper cap/bulb -->
+  <ellipse cx="12" cy="7" rx="2.5" ry="2" fill="currentColor" stroke="#1a1a1a" stroke-width="1"/>
+  <ellipse cx="12" cy="6.5" rx="2" ry="1.5" fill="white" opacity="0.3"/>
+  <!-- Dropper tube -->
+  <rect x="11.5" y="8" width="1" height="3" fill="#888" stroke="#1a1a1a" stroke-width="0.5"/>
+  <!-- Drop forming at tip -->
+  <ellipse cx="12" cy="11.5" rx="0.8" ry="1" fill="currentColor" opacity="0.7" stroke="#1a1a1a" stroke-width="0.5"/>
+  <!-- Falling drops -->
+  <path d="M12 14 Q11 16 12 17 Q13 16 12 14" fill="currentColor" opacity="0.6" stroke="#1a1a1a" stroke-width="0.8"/>
+  <circle cx="12" cy="20" r="0.6" fill="currentColor" opacity="0.5"/>
+  <!-- Bottle label -->
+  <rect x="9.5" y="12" width="5" height="3" rx="0.3" fill="white" opacity="0.7" stroke="#1a1a1a" stroke-width="0.4"/>
+  <line x1="10" y1="13" x2="14" y2="13" stroke="#1a1a1a" stroke-width="0.4"/>
+  <line x1="10" y1="14" x2="13.5" y2="14" stroke="#1a1a1a" stroke-width="0.4" opacity="0.6"/>
+  <!-- Bottle shine -->
+  <rect x="9.5" y="11" width="1" height="6" fill="white" opacity="0.4" rx="0.3"/>
+  <!-- Liquid level -->
+  <rect x="9.5" y="15.5" width="5" height="3" rx="1" fill="currentColor" opacity="0.5"/>
+  <line x1="9.5" y1="15.5" x2="14.5" y2="15.5" stroke="#1a1a1a" stroke-width="0.5" opacity="0.3"/>
 </svg>

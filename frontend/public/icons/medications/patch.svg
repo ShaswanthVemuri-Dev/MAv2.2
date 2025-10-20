@@ -1,6 +1,32 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="5" y="8" width="14" height="8" rx="2" fill="currentColor" fill-opacity="0.9"/>
-  <line x1="9" y1="10" x2="9" y2="14" stroke="currentColor" stroke-width="1.2" opacity="0.3"/>
-  <line x1="12" y1="10" x2="12" y2="14" stroke="currentColor" stroke-width="1.2" opacity="0.3"/>
-  <line x1="15" y1="10" x2="15" y2="14" stroke="currentColor" stroke-width="1.2" opacity="0.3"/>
+  <!-- Patch backing -->
+  <rect x="5" y="8" width="14" height="8" rx="1.5" fill="currentColor" stroke="#1a1a1a" stroke-width="1.2"/>
+  <!-- Adhesive edges (slightly lighter) -->
+  <rect x="5.5" y="8.5" width="1" height="7" fill="white" opacity="0.2"/>
+  <rect x="17.5" y="8.5" width="1" height="7" fill="white" opacity="0.2"/>
+  <!-- Peel line indicator -->
+  <line x1="5" y1="12" x2="19" y2="12" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="2,1" opacity="0.4"/>
+  <!-- Protective paper corner peel -->
+  <path d="M18 8 L19 8 L19 9 L18.5 8.5 Z" fill="white" stroke="#1a1a1a" stroke-width="0.8" opacity="0.8"/>
+  <!-- Medication pad center -->
+  <rect x="8" y="10" width="8" height="4" rx="0.5" fill="currentColor" opacity="0.7" stroke="#1a1a1a" stroke-width="0.8"/>
+  <rect x="8.5" y="10.5" width="7" height="3" rx="0.3" fill="white" opacity="0.15"/>
+  <!-- Micro-perforations for breathability -->
+  <circle cx="7" cy="9.5" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="7" cy="11" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="7" cy="12.5" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="7" cy="14" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="7" cy="15.5" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <!-- Right side perforations -->
+  <circle cx="17" cy="9.5" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="17" cy="11" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="17" cy="12.5" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="17" cy="14" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <circle cx="17" cy="15.5" r="0.3" fill="#1a1a1a" opacity="0.3"/>
+  <!-- Brand text area -->
+  <rect x="9" y="11" width="6" height="2" rx="0.3" fill="#1a1a1a" opacity="0.1"/>
+  <line x1="9.5" y1="11.7" x2="14" y2="11.7" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/>
+  <line x1="9.5" y1="12.3" x2="13" y2="12.3" stroke="#1a1a1a" stroke-width="0.4" opacity="0.5"/>
+  <!-- 3D edge shadow -->
+  <line x1="5" y1="16" x2="19" y2="16" stroke="#1a1a1a" stroke-width="1" opacity="0.3"/>
 </svg>

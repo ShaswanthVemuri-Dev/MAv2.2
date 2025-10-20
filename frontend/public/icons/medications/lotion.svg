@@ -1,6 +1,32 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="10" y="5" width="4" height="3" rx="1" fill="currentColor" fill-opacity="0.7"/>
-  <path d="M9 8H15C15.5523 8 16 8.44772 16 9V19C16 19.5523 15.5523 20 15 20H9C8.44772 20 8 19.5523 8 19V9C8 8.44772 8.44772 8 9 8Z" fill="currentColor" fill-opacity="0.9"/>
-  <path d="M10 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
-  <path d="M10 15H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <!-- Bottle shadow -->
+  <ellipse cx="12" cy="20.5" rx="4" ry="0.8" fill="#1a1a1a" opacity="0.2"/>
+  <!-- Pump dispenser top -->
+  <rect x="10.5" y="4" width="3" height="2" rx="0.5" fill="currentColor" stroke="#1a1a1a" stroke-width="1"/>
+  <ellipse cx="12" cy="4" rx="1" ry="0.5" fill="white" opacity="0.3"/>
+  <!-- Pump nozzle -->
+  <rect x="11.5" y="5.5" width="1" height="1.5" rx="0.3" fill="#888" stroke="#1a1a1a" stroke-width="0.6"/>
+  <ellipse cx="12" cy="7" rx="0.6" ry="0.3" fill="#1a1a1a" opacity="0.4"/>
+  <!-- Pump tube -->
+  <rect x="11.7" y="7" width="0.6" height="3" fill="#c0c0c0" opacity="0.6" stroke="#1a1a1a" stroke-width="0.4"/>
+  <!-- Bottle neck -->
+  <rect x="10" y="9" width="4" height="2" rx="0.5" fill="currentColor" stroke="#1a1a1a" stroke-width="1"/>
+  <!-- Main bottle body -->
+  <path d="M8 11 L8 19 Q8 20 12 20 Q16 20 16 19 L16 11 Z" fill="currentColor" stroke="#1a1a1a" stroke-width="1.2"/>
+  <!-- Shoulder curves -->
+  <path d="M10 10 Q8 10.5 8 11 M14 10 Q16 10.5 16 11" stroke="currentColor" stroke-width="1" fill="none"/>
+  <!-- Lotion level -->
+  <path d="M8.5 14 L8.5 18.5 Q8.5 19.3 12 19.3 Q15.5 19.3 15.5 18.5 L15.5 14 Z" fill="currentColor" opacity="0.6"/>
+  <ellipse cx="12" cy="14" rx="3.5" ry="1" fill="white" opacity="0.2"/>
+  <!-- Label -->
+  <rect x="9" y="12.5" width="6" height="3.5" rx="0.5" fill="white" opacity="0.85" stroke="#1a1a1a" stroke-width="0.5"/>
+  <line x1="9.5" y1="13.5" x2="14.5" y2="13.5" stroke="#1a1a1a" stroke-width="0.6"/>
+  <line x1="9.5" y1="14.5" x2="14" y2="14.5" stroke="#1a1a1a" stroke-width="0.5" opacity="0.6"/>
+  <line x1="9.5" y1="15.3" x2="13" y2="15.3" stroke="#1a1a1a" stroke-width="0.5" opacity="0.6"/>
+  <!-- Bottle shine -->
+  <path d="M9 12 Q9.5 11.5 10 12 L10 18 Q9.5 18 9 18 Z" fill="white" opacity="0.4"/>
+  <!-- Volume marking -->
+  <text x="14.5" y="13" font-size="1.5" fill="#1a1a1a" opacity="0.5">250ml</text>
+  <!-- Base ridge -->
+  <ellipse cx="12" cy="19.5" rx="4" ry="0.8" fill="none" stroke="#1a1a1a" stroke-width="0.8"/>
 </svg>
