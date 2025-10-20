@@ -1041,7 +1041,7 @@ class PrescriptionAPITester:
         print("=" * 70)
         print()
         
-        # Test sequence - Enhanced with new medical AI features
+        # Test sequence - Enhanced with new medical AI features and SVG system
         tests = [
             self.test_health_check,
             self.test_prescription_processing_text,
@@ -1060,7 +1060,14 @@ class PrescriptionAPITester:
             self.test_create_medication,
             self.test_get_specific_medication,
             self.test_delete_medication,
-            self.test_error_handling
+            self.test_error_handling,
+            # NEW SVG Icon System and Dual Color Detection Tests
+            self.test_svg_icon_system_dolo650,
+            self.test_dual_color_detection_dolo650,
+            self.test_dual_color_detection_amoxicillin,
+            self.test_svg_icon_forms_mapping,
+            self.test_crud_operations_new_schema,
+            self.test_ai_processing_multiple_medications
         ]
         
         passed = 0
