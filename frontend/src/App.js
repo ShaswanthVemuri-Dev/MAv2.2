@@ -411,10 +411,29 @@ function App() {
                   <div
                     key={medication.id}
                     className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow medication-card"
+                    style={{ borderTop: `4px solid ${medication.background_color}` }}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="text-3xl">{medication.icon}</div>
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center shadow-md"
+                          style={{ backgroundColor: medication.background_color }}
+                        >
+                          <img 
+                            src={medication.icon_svg} 
+                            alt={medication.form}
+                            className="w-6 h-6"
+                            style={{ 
+                              filter: `brightness(0) saturate(100%)`,
+                              color: medication.medication_color
+                            }}
+                          />
+                          <style jsx>{`
+                            img[src="${medication.icon_svg}"] {
+                              filter: brightness(0) saturate(100%) invert(${medication.medication_color === '#FFFFFF' ? '1' : '0'});
+                            }
+                          `}</style>
+                        </div>
                         <div>
                           <h3 className="font-bold text-gray-800">{medication.medicine_name}</h3>
                           <p className="text-sm text-gray-500">{medication.display_name}</p>
@@ -445,7 +464,12 @@ function App() {
                           {medication.times.map((time, index) => (
                             <span
                               key={index}
-                              className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full time-badge"
+                              className="text-xs px-2 py-1 rounded-full time-badge"
+                              style={{ 
+                                backgroundColor: `${medication.background_color}20`,
+                                color: medication.background_color,
+                                border: `1px solid ${medication.background_color}40`
+                              }}
                             >
                               {formatTime(time)}
                             </span>
@@ -464,10 +488,24 @@ function App() {
                       </div>
                     </div>
                     
-                    <div
-                      className="mt-4 h-2 rounded-full color-indicator"
-                      style={{ backgroundColor: medication.color }}
-                    ></div>
+                    <div className="mt-4 flex items-center gap-2">
+                      <div 
+                        className="h-2 rounded-full flex-1"
+                        style={{ backgroundColor: medication.background_color }}
+                      ></div>
+                      <div 
+                        className="w-8 h-8 rounded-full border-2 flex items-center justify-center"
+                        style={{ 
+                          borderColor: medication.background_color,
+                          backgroundColor: medication.medication_color
+                        }}
+                      >
+                        <div 
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: medication.medication_color }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
