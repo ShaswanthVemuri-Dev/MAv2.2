@@ -12,7 +12,8 @@ const MedicationIcon = ({ iconSvg, medicationColor, backgroundColor, size = 24 }
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        border: '2px solid rgba(255,255,255,0.3)'
       }}
     >
       <img 
@@ -21,21 +22,11 @@ const MedicationIcon = ({ iconSvg, medicationColor, backgroundColor, size = 24 }
         style={{
           width: size,
           height: size,
-          filter: getColorFilter(medicationColor)
+          display: 'block'
         }}
       />
     </div>
   );
-};
-
-// Helper function to convert hex color to CSS filter
-const getColorFilter = (hexColor) => {
-  // For white or very light colors, invert to make them visible
-  if (hexColor === '#FFFFFF' || hexColor === '#F8FAFC') {
-    return 'brightness(0) saturate(100%) invert(1)';
-  }
-  // For other colors, keep them as is
-  return 'brightness(0) saturate(100%)';
 };
 
 export default MedicationIcon;
