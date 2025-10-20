@@ -532,10 +532,25 @@ function App() {
                 {processedResult.medications.map((medication, index) => (
                   <div
                     key={index}
-                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    style={{ borderColor: medication.background_color, borderWidth: '2px' }}
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl">{medication.icon}</span>
+                      <div 
+                        className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm"
+                        style={{ backgroundColor: medication.background_color }}
+                      >
+                        <img 
+                          src={medication.icon_svg} 
+                          alt={medication.form}
+                          className="w-5 h-5"
+                          style={{ 
+                            filter: medication.medication_color === '#FFFFFF' 
+                              ? 'brightness(0) saturate(100%) invert(1)' 
+                              : 'brightness(0) saturate(100%)'
+                          }}
+                        />
+                      </div>
                       <div>
                         <h3 className="font-semibold text-gray-800">{medication.medicine_name}</h3>
                         <p className="text-sm text-gray-600">{medication.display_name}</p>
@@ -567,7 +582,12 @@ function App() {
                         {medication.times.map((time, timeIndex) => (
                           <span
                             key={timeIndex}
-                            className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full time-badge"
+                            className="text-xs px-2 py-1 rounded-full time-badge"
+                            style={{ 
+                              backgroundColor: `${medication.background_color}20`,
+                              color: medication.background_color,
+                              border: `1px solid ${medication.background_color}40`
+                            }}
                           >
                             {formatTime(time)}
                           </span>
