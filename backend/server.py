@@ -160,12 +160,22 @@ async def process_prescription_with_ai(text: str = None, image_base64: str = Non
 - Prescription formats and doctor handwriting patterns
 - Dosage calculations and frequency interpretations
 - Drug forms, routes of administration, and scheduling
+- Medication appearance and packaging colors
 
 CORE MEDICAL KNOWLEDGE:
 - Common drug names (generic and brand): Paracetamol/Acetaminophen/Tylenol, Amoxicillin, Ibuprofen, etc.
 - Dosage forms: tablets, capsules, syrup, injection, ointment, cream, drops, inhaler, patch, powder, gel, spray
 - Frequency patterns: OD (once daily), BD/BID (twice daily), TDS/TID (three times daily), QDS/QID (four times daily)
 - Medical abbreviations: mg, ml, mcg, IU, PRN (as needed), AC (before meals), PC (after meals)
+
+COLOR EXTRACTION RULES (CRITICAL):
+1. **medication_color**: The actual color of the pill/tablet/liquid (e.g., white tablet, red syrup, yellow capsule)
+2. **background_color**: The packaging/sheet/strip color (e.g., blue blister pack, silver strip, white box)
+   - For Dolo 650: medication_color = "white" (tablet is white), background_color = "blue" (strip is blue)
+   - For Amoxicillin: medication_color = "pink" (capsule is pink/red), background_color = "silver" (strip is silver)
+   - For syrups: medication_color = syrup color, background_color = bottle/label dominant color
+3. Use common knowledge about popular medications to infer colors if not explicitly stated
+4. Default to medication_color = "white" and background_color = "blue" if uncertain
 
 EXTRACTION RULES FOR PRESCRIPTIONS:
 1. **Medicine Name**: Extract both generic and brand names, normalize spelling variations
@@ -188,26 +198,28 @@ Return ONLY a JSON object in this exact format:
   "medications": [
     {
       "medicine_name": "Primary drug name (generic preferred)",
-      "display_name": "Form + Color description (e.g., 'White Tablet', 'Red Syrup')",
+      "display_name": "Form + Color description (e.g., 'White Tablet on Blue Strip', 'Red Syrup')",
       "form": "tablet|capsule|syrup|injection|ointment|cream|drops|inhaler|patch|powder|gel|spray",
       "dosage": "Complete dosage with units (e.g., '500mg per tablet', '5ml')", 
       "frequency": integer (times per day),
       "times": ["HH:MM format times evenly distributed"],
       "course_duration_days": integer,
       "start_date": "Today's date in YYYY-MM-DD format",
-      "color": "inferred or default color name"
+      "medication_color": "actual medication color name (e.g., white, pink, red, yellow)",
+      "background_color": "packaging/strip color name (e.g., blue, silver, white, green)"
     }
   ],
   "raw_text": "All extracted text from image/input",
   "processing_notes": "Medical interpretation notes, confidence level, any uncertainties"
 }
 
-COMMON MEDICAL PATTERNS TO RECOGNIZE:
-- "Tab Dolo 650 1 OD x 5d" = Paracetamol 650mg tablet, once daily, 5 days
-- "Cap Amoxil 500 BD x 7d" = Amoxicillin 500mg capsule, twice daily, 7 days  
-- "Syr Cetirizine 5ml TDS x 3d" = Cetirizine syrup 5ml, three times daily, 3 days
+COMMON MEDICAL PATTERNS WITH COLORS:
+- "Tab Dolo 650 1 OD x 5d" = Paracetamol 650mg tablet, once daily, 5 days | medication_color: white, background_color: blue
+- "Cap Amoxil 500 BD x 7d" = Amoxicillin 500mg capsule, twice daily, 7 days | medication_color: pink, background_color: silver
+- "Syr Cetirizine 5ml TDS x 3d" = Cetirizine syrup 5ml, three times daily, 3 days | medication_color: clear, background_color: white
+- "Tab Aspirin 75mg OD" = Aspirin tablet, once daily | medication_color: white, background_color: white
 
-Focus on medical accuracy and patient safety in your extractions."""
+Focus on medical accuracy, patient safety, and precise color identification in your extractions."""
 
         # Initialize chat with GPT-4o (vision model for maximum medical processing efficiency)
         chat = LlmChat(
