@@ -416,25 +416,12 @@ function App() {
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div 
-                          className="w-12 h-12 rounded-full flex items-center justify-center shadow-md"
-                          style={{ backgroundColor: medication.background_color }}
-                        >
-                          <img 
-                            src={medication.icon_svg} 
-                            alt={medication.form}
-                            className="w-6 h-6"
-                            style={{ 
-                              filter: `brightness(0) saturate(100%)`,
-                              color: medication.medication_color
-                            }}
-                          />
-                          <style jsx>{`
-                            img[src="${medication.icon_svg}"] {
-                              filter: brightness(0) saturate(100%) invert(${medication.medication_color === '#FFFFFF' ? '1' : '0'});
-                            }
-                          `}</style>
-                        </div>
+                        <MedicationIcon 
+                          iconSvg={medication.icon_svg}
+                          medicationColor={medication.medication_color}
+                          backgroundColor={medication.background_color}
+                          size={24}
+                        />
                         <div>
                           <h3 className="font-bold text-gray-800">{medication.medicine_name}</h3>
                           <p className="text-sm text-gray-500">{medication.display_name}</p>
