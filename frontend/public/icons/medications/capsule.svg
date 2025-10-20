@@ -1,17 +1,14 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Capsule shadow -->
-  <rect x="6.5" y="4.5" width="11" height="15" rx="5.5" fill="currentColor" opacity="0.1" transform="rotate(-30 12 12)"/>
-  <!-- Capsule main body -->
-  <rect x="7" y="5" width="10" height="14" rx="5" fill="currentColor" stroke="#1a1a1a" stroke-width="1.2" transform="rotate(-30 12 12)"/>
+  <ellipse cx="12" cy="13" rx="6" ry="9" fill="#E5E7EB" opacity="0.5" transform="rotate(-30 12 12)"/>
+  <!-- Capsule bottom half (darker) -->
+  <path d="M12 12 L8 16 Q6 18 8 20 L16 20 Q18 18 16 16 L12 12 Z" fill="#EF4444" stroke="#1F2937" stroke-width="1.5" transform="rotate(-30 12 12)"/>
+  <!-- Capsule top half (lighter) -->
+  <path d="M12 12 L8 8 Q6 6 8 4 L16 4 Q18 6 16 8 L12 12 Z" fill="#FCA5A5" stroke="#1F2937" stroke-width="1.5" transform="rotate(-30 12 12)"/>
   <!-- Capsule dividing line -->
-  <line x1="6" y1="12" x2="18" y2="12" stroke="#1a1a1a" stroke-width="1.5" opacity="0.5"/>
+  <line x1="6" y1="12" x2="18" y2="12" stroke="#1F2937" stroke-width="1.8" opacity="0.8"/>
   <!-- Top half shine -->
-  <ellipse cx="12" cy="8" rx="4" ry="2.5" fill="white" opacity="0.4" transform="rotate(-30 12 8)"/>
-  <!-- Bottom half darker tone -->
-  <path d="M7 12 L17 12 L17 17 Q17 20 12 20 Q7 20 7 17 Z" fill="#1a1a1a" opacity="0.15" transform="rotate(-30 12 12)"/>
-  <!-- Gelatin texture lines -->
-  <line x1="10" y1="8" x2="10" y2="10" stroke="white" stroke-width="0.5" opacity="0.3" transform="rotate(-30 12 12)"/>
-  <line x1="14" y1="14" x2="14" y2="16" stroke="white" stroke-width="0.5" opacity="0.3" transform="rotate(-30 12 12)"/>
-  <!-- Outer edge -->
-  <rect x="7" y="5" width="10" height="14" rx="5" fill="none" stroke="#1a1a1a" stroke-width="1" transform="rotate(-30 12 12)"/>
+  <ellipse cx="10" cy="8" rx="3" ry="2" fill="white" opacity="0.5" transform="rotate(-30 10 8)"/>
+  <!-- Gelatin texture -->
+  <path d="M8 8 L9 9 M15 15 L16 16" stroke="white" stroke-width="1" opacity="0.4" stroke-linecap="round" transform="rotate(-30 12 12)"/>
 </svg>

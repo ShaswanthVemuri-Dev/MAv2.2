@@ -1,26 +1,21 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Suppository shape (torpedo/bullet) -->
-  <path d="M10 5 L10 17 Q10 19 12 20 Q14 19 14 17 L14 5 Q14 3 12 3 Q10 3 10 5 Z" fill="currentColor" stroke="#1a1a1a" stroke-width="1.2"/>
+  <!-- Suppository shape -->
+  <path d="M10 5 L10 17 Q10 19 12 20 Q14 19 14 17 L14 5 Q14 3 12 3 Q10 3 10 5 Z" fill="#FEF3C7" stroke="#1F2937" stroke-width="1.5"/>
   <!-- Pointed end -->
-  <path d="M10 17 Q10 19 12 20 Q14 19 14 17" fill="currentColor" opacity="0.7" stroke="#1a1a1a" stroke-width="1"/>
+  <path d="M10 17 Q10 19 12 20 Q14 19 14 17" fill="#FDE68A" opacity="0.8" stroke="#1F2937" stroke-width="1.2"/>
   <!-- Top flat end -->
-  <ellipse cx="12" cy="5" rx="2" ry="1.2" fill="currentColor" stroke="#1a1a1a" stroke-width="1"/>
-  <ellipse cx="12" cy="4.8" rx="1.5" ry="0.8" fill="white" opacity="0.3"/>
-  <!-- 3D shading on body -->
-  <path d="M10.5 6 L10.5 16.5 Q10.5 18 11.5 19" stroke="white" stroke-width="0.8" fill="none" opacity="0.4"/>
-  <path d="M13.5 6 L13.5 16.5 Q13.5 18 12.5 19" stroke="#1a1a1a" stroke-width="0.8" fill="none" opacity="0.2"/>
-  <!-- Center line for halves -->
-  <line x1="12" y1="5" x2="12" y2="18" stroke="#1a1a1a" stroke-width="0.6" opacity="0.2" stroke-dasharray="1,1"/>
-  <!-- Wrapper marks (foil wrapper partially visible) -->
-  <path d="M9.5 8 L9 8.5 L9 9.5 L9.5 10" stroke="#888" stroke-width="0.6" fill="none" opacity="0.6"/>
-  <path d="M14.5 8 L15 8.5 L15 9.5 L14.5 10" stroke="#888" stroke-width="0.6" fill="none" opacity="0.6"/>
+  <ellipse cx="12" cy="5" rx="2" ry="1.4" fill="#FEF3C7" stroke="#1F2937" stroke-width="1.2"/>
+  <ellipse cx="12" cy="4.8" rx="1.6" ry="1" fill="white" opacity="0.4"/>
+  <!-- 3D shading -->
+  <path d="M10.5 6 L10.5 16.5 Q10.5 18 11.5 19" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M13.5 6 L13.5 16.5 Q13.5 18 12.5 19" stroke="#D97706" stroke-width="1" fill="none" opacity="0.3"/>
+  <!-- Center line -->
+  <line x1="12" y1="5" x2="12" y2="18" stroke="#D97706" stroke-width="0.8" opacity="0.3" stroke-dasharray="1.5,1.5"/>
+  <!-- Wrapper marks -->
+  <path d="M9.5 8 L9 8.5 L9 9.5 L9.5 10" stroke="#C0C0C0" stroke-width="0.8" fill="none" opacity="0.7"/>
+  <path d="M14.5 8 L15 8.5 L15 9.5 L14.5 10" stroke="#C0C0C0" stroke-width="0.8" fill="none" opacity="0.7"/>
   <!-- Surface highlights -->
-  <ellipse cx="11" cy="10" rx="0.8" ry="2" fill="white" opacity="0.25"/>
-  <!-- Texture lines -->
-  <line x1="10.2" y1="12" x2="10.5" y2="12" stroke="white" stroke-width="0.4" opacity="0.3"/>
-  <line x1="13.5" y1="12" x2="13.8" y2="12" stroke="#1a1a1a" stroke-width="0.4" opacity="0.2"/>
-  <!-- Packaging tear strip indication -->
-  <rect x="9" y="6" width="0.5" height="2" rx="0.2" fill="#e74c3c" opacity="0.7"/>
-  <!-- Shadow at base -->
-  <ellipse cx="12" cy="20.2" rx="2.5" ry="0.5" fill="#1a1a1a" opacity="0.15"/>
+  <ellipse cx="11" cy="10" rx="1" ry="2.5" fill="white" opacity="0.3"/>
+  <!-- Packaging tear strip -->
+  <rect x="9" y="6" width="0.6" height="2.5" rx="0.3" fill="#EF4444" opacity="0.8"/>
 </svg>
