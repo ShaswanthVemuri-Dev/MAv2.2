@@ -304,23 +304,28 @@ async def process_prescription(request: PrescriptionProcessRequest):
     # Process with enhanced medical AI
     ai_result = await process_prescription_with_ai(request.text, request.image_base64, request.voice_transcription)
     
-    # Convert to our models and enhance with icons/colors
+    # Convert to our models and enhance with SVG icons and colors
     medications = []
     for med_data in ai_result.get("medications", []):
-        # Get icon based on form
+        # Get SVG icon path based on form
         form = med_data.get("form", "tablet").lower()
-        icon = DRUG_FORM_ICONS.get(form, "💊")
+        icon_svg = DRUG_FORM_ICONS.get(form, "/icons/medications/tablet.svg")
         
-        # Get color
-        color_name = med_data.get("color", "white").lower()
-        color = DRUG_COLORS.get(color_name, "#FFFFFF")
+        # Get medication color (actual pill/liquid color)
+        medication_color_name = med_data.get("medication_color", "white").lower()
+        medication_color = COLOR_MAP.get(medication_color_name, "#FFFFFF")
+        
+        # Get background color (packaging/strip color)
+        background_color_name = med_data.get("background_color", "blue").lower()
+        background_color = COLOR_MAP.get(background_color_name, "#3B82F6")
         
         medication = MedicationSchedule(
             medicine_name=med_data["medicine_name"],
             display_name=med_data["display_name"],
             form=form,
-            icon=icon,
-            color=color,
+            icon_svg=icon_svg,
+            medication_color=medication_color,
+            background_color=background_color,
             dosage=med_data["dosage"],
             frequency=med_data["frequency"],
             times=med_data["times"],
