@@ -524,21 +524,12 @@ function App() {
                     style={{ borderColor: medication.background_color, borderWidth: '2px' }}
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm"
-                        style={{ backgroundColor: medication.background_color }}
-                      >
-                        <img 
-                          src={medication.icon_svg} 
-                          alt={medication.form}
-                          className="w-5 h-5"
-                          style={{ 
-                            filter: medication.medication_color === '#FFFFFF' 
-                              ? 'brightness(0) saturate(100%) invert(1)' 
-                              : 'brightness(0) saturate(100%)'
-                          }}
-                        />
-                      </div>
+                      <MedicationIcon 
+                        iconSvg={medication.icon_svg}
+                        medicationColor={medication.medication_color}
+                        backgroundColor={medication.background_color}
+                        size={20}
+                      />
                       <div>
                         <h3 className="font-semibold text-gray-800">{medication.medicine_name}</h3>
                         <p className="text-sm text-gray-600">{medication.display_name}</p>
