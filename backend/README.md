@@ -1,4 +1,4 @@
-Backend API (Mobile-ready)
+﻿Backend API (Mobile-ready)
 
 Overview
 - FastAPI service providing AI-assisted prescription processing and CRUD for medication schedules.
@@ -8,19 +8,19 @@ Overview
 Environment
 - Copy `.env.example` to `.env` and set values.
 - Required: `MONGO_URL` (MongoDB Atlas/DocumentDB) and `DB_NAME`.
-- Optional: `OPENAI_API_KEY` (enables Whisper transcription and GPT‑4o OCR/field extraction) and/or `EMERGENT_LLM_KEY` (legacy integration). When both are absent, a heuristic parser supplies best-effort results.
+- Optional: `OPENAI_API_KEY` (enables Whisper transcription and GPT-4o OCR/field extraction). When absent, a heuristic parser supplies best-effort results.
 - Safety limits: `MAX_IMAGE_SIZE_MB`, `MAX_AUDIO_SIZE_MB`, and `MAX_MEDICATIONS_PER_REQUEST`.
 
 Key Endpoints (prefix `/api`)
-- `POST /transcribe-audio` → `{ text, confidence?, duration? }` (multipart `file` or JSON `{audio_base64,mime_type}`; caps size and optional duration)
-- `GET /health` → `{ status, db, time }`.
-- `POST /process-prescription` → `{ medications: Medication[], raw_text, processing_notes }`.
+- `POST /transcribe-audio` — `{ text, confidence?, duration? }` (multipart `file` or JSON `{audio_base64,mime_type}`; caps size and optional duration)
+- `GET /health` — `{ status, db, time }`.
+- `POST /process-prescription` — `{ medications: Medication[], raw_text, processing_notes }`.
   - Body: `{ text?, image_base64?, voice_transcription?, user_id?, device_id? }`.
   - Stores returned medications to DB (when DB connected), tagged with `user_id` and `device_id` if provided.
-- `GET /medications?user_id&device_id` → list of medications, optionally filtered.
-- `GET /medications/{id}` → medication by id.
-- `POST /medications` → create manually (all fields optional).
-- `DELETE /medications/{id}` → delete.
+- `GET /medications?user_id&device_id` — list of medications, optionally filtered.
+- `GET /medications/{id}` — medication by id.
+- `POST /medications` — create manually (all fields optional).
+- `DELETE /medications/{id}` — delete.
 
 Medication Model
 ```
@@ -47,7 +47,7 @@ Mobile Integration Notes
 - Native apps can call the REST endpoints directly; no web dependencies required.
 - Use `user_id` (and optionally `device_id`) to scope data per user/device.
 - The service returns partial objects. Clients should allow users to confirm/correct fields.
-- When `EMERGENT_LLM_KEY` is not configured, the fallback parser supports simple phrases and OD/BD/TDS/QDS.
+- When `OPENAI_API_KEY` is not configured, the fallback parser supports simple phrases and OD/BD/TDS/QDS.
 
 Scalability
 - Async I/O via FastAPI + Motor for MongoDB.

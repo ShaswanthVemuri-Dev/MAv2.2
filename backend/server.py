@@ -14,12 +14,6 @@ import json
 import asyncio
 import io
 import mimetypes
-try:
-    from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
-except Exception:
-    LlmChat = None  # type: ignore
-    UserMessage = None  # type: ignore
-    ImageContent = None  # type: ignore
 
 try:
     from openai import OpenAI
@@ -351,14 +345,8 @@ async def process_prescription_with_ai(text: str = None, image_base64: str = Non
             result = await process_prescription_with_openai(text, image_base64, voice_transcription)
             return result
 
-        # Else use emergentintegrations if configured
-        api_key = os.environ.get('EMERGENT_LLM_KEY')
-        if not api_key or LlmChat is None or UserMessage is None:
-            # Fallback: no AI key configured
-            return basic_text_parse(voice_transcription or text)
-
-        # Create unique session ID for this processing
-        session_id = f"prescription_{uuid.uuid4()}"
+        # Legacy provider removed; falling back if OpenAI not available
+        return basic_text_parse(voice_transcription or text)
         
         # Enhanced system message with medical-specific context
         system_message = """You are a specialized Medical Prescription Processing AI with expertise in:
@@ -427,71 +415,8 @@ COMMON MEDICAL PATTERNS WITH COLORS:
 
 Focus on medical accuracy, patient safety, and precise color identification in your extractions."""
 
-        # Initialize chat with GPT-4o (vision model for maximum medical processing efficiency)
-        chat = LlmChat(
-            api_key=api_key,
-            session_id=session_id,
-            system_message=system_message
-        ).with_model("openai", "gpt-4o")
-
-        # Prepare input text
-        input_content = ""
-        if voice_transcription:
-            input_content = f"Voice transcription: {voice_transcription}"
-        elif text:
-            input_content = f"Prescription text: {text}"
-
-        # Create user message
-        if image_base64 and ImageContent is not None and UserMessage is not None:
-            # Enhanced prompt for image processing with medical context
-            image_content = ImageContent(image_base64=image_base64)
-            user_message = UserMessage(
-                text=f"""Analyze this prescription image with maximum medical accuracy. 
-
-INSTRUCTIONS:
-1. Extract ALL readable text, including partially visible words
-2. Use medical knowledge to interpret unclear handwriting/print
-3. Recognize common prescription abbreviations and formats
-4. Apply context to complete partial information
-5. Provide confidence assessment for each extraction
-
-Additional context: {input_content if input_content else 'No additional context'}
-
-Focus on: Medicine names, dosages, frequencies, duration, and any special instructions.""",
-                file_contents=[image_content]
-            )
-        else:
-            # Process text or voice transcription
-            user_message = UserMessage(
-                text=f"""Process this prescription information with medical expertise:
-
-{input_content}
-
-Apply medical knowledge to:
-1. Normalize drug names to standard forms
-2. Convert abbreviations to full specifications  
-3. Calculate optimal dosing schedules
-4. Infer missing but standard information
-5. Ensure medical safety and accuracy"""
-            )
-
-        # Send message and get response
-        response = await chat.send_message(user_message)
-        
-        # Parse JSON response
-        try:
-            result = json.loads(response)
-            return result
-        except json.JSONDecodeError:
-            # If response is not valid JSON, try to extract JSON from response
-            import re
-            json_match = re.search(r'\{.*\}', response, re.DOTALL)
-            if json_match:
-                result = json.loads(json_match.group())
-                return result
-            else:
-                # Fallback to heuristic parser if JSON cannot be parsed
-                return basic_text_parse(voice_transcription or text)
+        # Legacy code path removed
+        return basic_text_parse(voice_transcription or text)
                 
     except Exception as e:
         logging.error(f"Error processing prescription with AI: {str(e)}")
