@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import MedicationIcon from "./components/MedicationIcon";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || (typeof window !== 'undefined' && window.__BACKEND_URL__) || 'http://localhost:8001';
 const API = `${BACKEND_URL}/api`;
+axios.defaults.baseURL = BACKEND_URL;
+axios.defaults.timeout = 30000;
 
 function App() {
   const [medications, setMedications] = useState([]);
@@ -25,6 +27,19 @@ function App() {
     fetchMedications();
     initializeSpeechRecognition();
   }, []);
+
+  // Clean up speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        if (speechRecognition && isRecording) {
+          speechRecognition.stop();
+        }
+      } catch (e) {
+        // no-op
+      }
+    };
+  }, [speechRecognition, isRecording]);
 
   const initializeSpeechRecognition = () => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -184,7 +199,7 @@ function App() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            🏥 Advanced Prescription Processor
+            Advanced Prescription Processor
           </h1>
           <p className="text-gray-600">
             Upload images, enter text, or speak your prescription details for AI-powered processing
@@ -202,7 +217,7 @@ function App() {
                   : "text-gray-600 hover:text-blue-500"
               }`}
             >
-              📋 Process Prescription
+              Process Prescription
             </button>
             <button
               onClick={() => setActiveTab("medications")}
@@ -212,7 +227,7 @@ function App() {
                   : "text-gray-600 hover:text-blue-500"
               }`}
             >
-              💊 My Medications ({medications.length})
+              My Medications ({medications.length})
             </button>
             {processedResult && (
               <button
@@ -223,7 +238,7 @@ function App() {
                     : "text-gray-600 hover:text-blue-500"
                 }`}
               >
-                ✅ Latest Results
+                Latest Results
               </button>
             )}
           </div>
@@ -234,13 +249,13 @@ function App() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                📄 Multiple Input Methods Available
+                Multiple Input Methods Available
               </h2>
               
               {/* Image Upload Section */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  📷 Upload Prescription Image (Enhanced OCR)
+                  Upload Prescription Image (Enhanced OCR)
                 </label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                   <input
@@ -262,8 +277,8 @@ function App() {
                       </div>
                     ) : (
                       <div>
-                        <div className="text-6xl mb-3">📷</div>
-                        <p className="text-gray-600 mb-2">Click to upload prescription image</p>
+                        <div className="text-6xl mb-3">??</div>
+                        <div className="text-6xl mb-3">??</div>
                         <p className="text-sm text-gray-500">AI will read even distorted handwriting</p>
                       </div>
                     )}
@@ -275,7 +290,7 @@ function App() {
               {audioSupported && (
                 <div className="mb-8">
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    🎤 Voice Input (Speak Your Prescription)
+                    Voice Input (Speak Your Prescription)
                   </label>
                   <div className="border border-gray-300 rounded-lg p-4">
                     <div className="flex items-center gap-4 mb-4">
@@ -290,11 +305,11 @@ function App() {
                       >
                         {isRecording ? (
                           <>
-                            🔴 Recording...
+                            Recording...
                           </>
                         ) : (
                           <>
-                            🎤 Start Recording
+                            Start Recording
                           </>
                         )}
                       </button>
@@ -304,7 +319,7 @@ function App() {
                           onClick={stopRecording}
                           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium"
                         >
-                          ⏹️ Stop
+                          Stop
                         </button>
                       )}
                       
@@ -313,7 +328,7 @@ function App() {
                           onClick={() => setVoiceTranscript("")}
                           className="px-3 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm"
                         >
-                          🗑️ Clear
+                          Clear
                         </button>
                       )}
                     </div>
@@ -342,7 +357,7 @@ function App() {
               {/* Text Input Section */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  ✏️ Enter Prescription Text (Supports Medical Abbreviations)
+                  Enter Prescription Text (Supports Medical Abbreviations)
                 </label>
                 <textarea
                   value={inputText}
@@ -369,7 +384,7 @@ function App() {
                     </>
                   ) : (
                     <>
-                      🧠 Process with AI
+                      Process with AI
                     </>
                   )}
                 </button>
@@ -377,7 +392,7 @@ function App() {
                   onClick={clearInput}
                   className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
                 >
-                  🗑️ Clear All
+                  Clear All
                 </button>
               </div>
 
@@ -398,11 +413,11 @@ function App() {
         {activeTab === "medications" && (
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              💊 Your Medication Schedule
+              Your Medication Schedule
             </h2>
-            {medications.length === 0 ? (
+            
               <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-                <div className="text-6xl mb-4">🏥</div>
+                <div className="text-6xl mb-4">??</div>
                 <p className="text-gray-500 text-lg">No medications found</p>
                 <p className="text-gray-400 mt-2">Process a prescription to get started</p>
               </div>
@@ -430,9 +445,7 @@ function App() {
                       <button
                         onClick={() => deleteMedication(medication.id)}
                         className="text-red-500 hover:text-red-700 text-sm"
-                      >
-                        🗑️
-                      </button>
+                      >                      
                     </div>
                     
                     <div className="space-y-3">
@@ -506,7 +519,7 @@ function App() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                ✅ AI Processing Results
+                AI Processing Results
               </h2>
               
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg success-border">
