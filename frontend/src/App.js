@@ -445,7 +445,10 @@ function App() {
                       <button
                         onClick={() => deleteMedication(medication.id)}
                         className="text-red-500 hover:text-red-700 text-sm"
-                      >                      
+                        aria-label="Delete medication"
+                      >
+                        ×
+                      </button>
                     </div>
                     
                     <div className="space-y-3">

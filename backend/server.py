@@ -563,7 +563,7 @@ async def process_prescription(request: PrescriptionProcessRequest):
         medications.append(medication)
     
     # Store in database
-    if db and medications:
+    if db is not None and medications:
         for medication in medications:
             med_dict = prepare_for_mongo(medication.dict())
             await db.medications.insert_one(med_dict)
@@ -583,7 +583,7 @@ async def get_medications(user_id: Optional[str] = None, device_id: Optional[str
     if device_id:
         query["device_id"] = device_id
 
-    if not db:
+    if db is None:
         return []
     medications = await db.medications.find(query).to_list(1000)
     return [MedicationSchedule(**parse_from_mongo(med)) for med in medications]
@@ -591,7 +591,7 @@ async def get_medications(user_id: Optional[str] = None, device_id: Optional[str
 @api_router.get("/medications/{medication_id}", response_model=MedicationSchedule)
 async def get_medication(medication_id: str):
     """Get a specific medication by ID"""
-    if not db:
+    if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     medication = await db.medications.find_one({"id": medication_id})
     if not medication:
@@ -601,7 +601,7 @@ async def get_medication(medication_id: str):
 @api_router.delete("/medications/{medication_id}")
 async def delete_medication(medication_id: str):
     """Delete a medication"""
-    if not db:
+    if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     result = await db.medications.delete_one({"id": medication_id})
     if result.deleted_count == 0:
@@ -611,7 +611,7 @@ async def delete_medication(medication_id: str):
 @api_router.post("/medications", response_model=MedicationSchedule)
 async def create_medication(medication: MedicationScheduleCreate):
     """Manually create a medication schedule"""
-    if not db:
+    if db is None:
         raise HTTPException(status_code=503, detail="Database not available")
     med_obj = MedicationSchedule(**medication.dict())
     med_dict = prepare_for_mongo(med_obj.dict())
