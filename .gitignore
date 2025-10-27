@@ -81,3 +81,6 @@ android-sdk/ -e
 # Environment files
 *.env
 *.env.*
+# Allow env examples to be versioned
+!**/.env.example
+!**/.env.*.example
