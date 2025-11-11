@@ -8,6 +8,27 @@ const API = `${BACKEND_URL}/api`;
 axios.defaults.baseURL = BACKEND_URL;
 axios.defaults.timeout = 30000;
 
+const HEX6 = /^#(?:[0-9a-fA-F]{6})$/;
+const HEX8 = /^#(?:[0-9a-fA-F]{8})$/;
+const DEFAULT_BACKGROUND = "#E2E8F0";
+
+const resolveColor = (value, fallback = DEFAULT_BACKGROUND) => {
+  if (value && (HEX6.test(value) || HEX8.test(value))) {
+    return value;
+  }
+  return fallback;
+};
+
+const withAlpha = (value, alpha = "20") => {
+  if (value && HEX8.test(value)) {
+    return value;
+  }
+  if (value && HEX6.test(value)) {
+    return `${value}${alpha}`;
+  }
+  return `${DEFAULT_BACKGROUND}${alpha}`;
+};
+
 function App() {
   const [medications, setMedications] = useState([]);
   const [inputText, setInputText] = useState("");
@@ -416,6 +437,7 @@ function App() {
               Your Medication Schedule
             </h2>
             
+            {medications.length === 0 ? (
               <div className="bg-white rounded-xl shadow-lg p-12 text-center">
                 <div className="text-6xl mb-4">??</div>
                 <p className="text-gray-500 text-lg">No medications found</p>
@@ -423,95 +445,100 @@ function App() {
               </div>
             ) : (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {medications.map((medication) => (
-                  <div
-                    key={medication.id}
-                    className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow medication-card"
-                    style={{ borderTop: `4px solid ${medication.background_color}` }}
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <MedicationIcon 
-                          iconSvg={medication.icon_svg}
-                          medicationColor={medication.medication_color}
-                          backgroundColor={medication.background_color}
-                          size={24}
-                        />
+                {medications.map((medication) => {
+                  const bgColor = resolveColor(medication.background_color);
+                  const badgeBg = withAlpha(medication.background_color);
+                  const badgeBorder = withAlpha(medication.background_color, "40");
+                  return (
+                    <div
+                      key={medication.id}
+                      className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow medication-card"
+                      style={{ borderTop: `4px solid ${bgColor}` }}
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <MedicationIcon 
+                            iconSvg={medication.icon_svg}
+                            medicationColor={medication.medication_color}
+                            backgroundColor={medication.background_color}
+                            size={24}
+                          />
+                          <div>
+                            <h3 className="font-bold text-gray-800">{medication.medicine_name}</h3>
+                            <p className="text-sm text-gray-500">{medication.display_name}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => deleteMedication(medication.id)}
+                          className="text-red-500 hover:text-red-700 text-sm"
+                          aria-label="Delete medication"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-600">Dosage:</span>
+                          <span className="text-sm text-gray-800">{medication.dosage}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-600">Frequency:</span>
+                          <span className="text-sm text-gray-800">{medication.frequency}x daily</span>
+                        </div>
+                        
                         <div>
-                          <h3 className="font-bold text-gray-800">{medication.medicine_name}</h3>
-                          <p className="text-sm text-gray-500">{medication.display_name}</p>
+                          <span className="text-sm font-medium text-gray-600">Times:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {(medication.times || []).map((time, index) => (
+                              <span
+                                key={index}
+                                className="text-xs px-2 py-1 rounded-full time-badge"
+                                style={{ 
+                                  backgroundColor: badgeBg,
+                                  color: bgColor,
+                                  border: `1px solid ${badgeBorder}`
+                                }}
+                              >
+                                {formatTime(time)}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                      <button
-                        onClick={() => deleteMedication(medication.id)}
-                        className="text-red-500 hover:text-red-700 text-sm"
-                        aria-label="Delete medication"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-600">Dosage:</span>
-                        <span className="text-sm text-gray-800">{medication.dosage}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-600">Frequency:</span>
-                        <span className="text-sm text-gray-800">{medication.frequency}x daily</span>
-                      </div>
-                      
-                      <div>
-                        <span className="text-sm font-medium text-gray-600">Times:</span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {medication.times.map((time, index) => (
-                            <span
-                              key={index}
-                              className="text-xs px-2 py-1 rounded-full time-badge"
-                              style={{ 
-                                backgroundColor: `${medication.background_color}20`,
-                                color: medication.background_color,
-                                border: `1px solid ${medication.background_color}40`
-                              }}
-                            >
-                              {formatTime(time)}
-                            </span>
-                          ))}
+                        
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-600">Duration:</span>
+                          <span className="text-sm text-gray-800">{medication.course_duration_days} days</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-600">Start Date:</span>
+                          <span className="text-sm text-gray-800">{medication.start_date}</span>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-600">Duration:</span>
-                        <span className="text-sm text-gray-800">{medication.course_duration_days} days</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-600">Start Date:</span>
-                        <span className="text-sm text-gray-800">{medication.start_date}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 flex items-center gap-2">
-                      <div 
-                        className="h-2 rounded-full flex-1"
-                        style={{ backgroundColor: medication.background_color }}
-                      ></div>
-                      <div 
-                        className="w-8 h-8 rounded-full border-2 flex items-center justify-center"
-                        style={{ 
-                          borderColor: medication.background_color,
-                          backgroundColor: medication.medication_color
-                        }}
-                      >
+                      <div className="mt-4 flex items-center gap-2">
                         <div 
-                          className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: medication.medication_color }}
+                          className="h-2 rounded-full flex-1"
+                          style={{ backgroundColor: bgColor }}
                         ></div>
+                        <div 
+                          className="w-8 h-8 rounded-full border-2 flex items-center justify-center"
+                          style={{ 
+                            borderColor: bgColor,
+                            backgroundColor: medication.medication_color
+                          }}
+                        >
+                          <div 
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: medication.medication_color }}
+                          ></div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -533,64 +560,69 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                {processedResult.medications.map((medication, index) => (
-                  <div
-                    key={index}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                    style={{ borderColor: medication.background_color, borderWidth: '2px' }}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <MedicationIcon 
-                        iconSvg={medication.icon_svg}
-                        medicationColor={medication.medication_color}
-                        backgroundColor={medication.background_color}
-                        size={20}
-                      />
-                      <div>
-                        <h3 className="font-semibold text-gray-800">{medication.medicine_name}</h3>
-                        <p className="text-sm text-gray-600">{medication.display_name}</p>
+                {processedResult.medications.map((medication, index) => {
+                  const bgColor = resolveColor(medication.background_color);
+                  const badgeBg = withAlpha(medication.background_color);
+                  const badgeBorder = withAlpha(medication.background_color, "40");
+                  return (
+                    <div
+                      key={index}
+                      className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                      style={{ borderColor: bgColor, borderWidth: "2px" }}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <MedicationIcon 
+                          iconSvg={medication.icon_svg}
+                          medicationColor={medication.medication_color}
+                          backgroundColor={medication.background_color}
+                          size={20}
+                        />
+                        <div>
+                          <h3 className="font-semibold text-gray-800">{medication.medicine_name}</h3>
+                          <p className="text-sm text-gray-600">{medication.display_name}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium text-gray-600">Dosage:</span>
+                          <p className="text-gray-800">{medication.dosage}</p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-600">Frequency:</span>
+                          <p className="text-gray-800">{medication.frequency}x daily</p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-600">Duration:</span>
+                          <p className="text-gray-800">{medication.course_duration_days} days</p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-600">Start Date:</span>
+                          <p className="text-gray-800">{medication.start_date}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-3">
+                        <span className="font-medium text-gray-600 text-sm">Schedule:</span>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {(medication.times || []).map((time, timeIndex) => (
+                            <span
+                              key={timeIndex}
+                              className="text-xs px-2 py-1 rounded-full time-badge"
+                              style={{ 
+                                backgroundColor: badgeBg,
+                                color: bgColor,
+                                border: `1px solid ${badgeBorder}`
+                              }}
+                            >
+                              {formatTime(time)}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium text-gray-600">Dosage:</span>
-                        <p className="text-gray-800">{medication.dosage}</p>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Frequency:</span>
-                        <p className="text-gray-800">{medication.frequency}x daily</p>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Duration:</span>
-                        <p className="text-gray-800">{medication.course_duration_days} days</p>
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-600">Start Date:</span>
-                        <p className="text-gray-800">{medication.start_date}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-3">
-                      <span className="font-medium text-gray-600 text-sm">Schedule:</span>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {medication.times.map((time, timeIndex) => (
-                          <span
-                            key={timeIndex}
-                            className="text-xs px-2 py-1 rounded-full time-badge"
-                            style={{ 
-                              backgroundColor: `${medication.background_color}20`,
-                              color: medication.background_color,
-                              border: `1px solid ${medication.background_color}40`
-                            }}
-                          >
-                            {formatTime(time)}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">

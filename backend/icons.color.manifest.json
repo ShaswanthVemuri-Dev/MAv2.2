@@ -1,0 +1,301 @@
+{
+  "_meta": {
+    "note": "Do NOT modify SVGs. Replace fills per slot. Excludes 'none' and fixed blacks.",
+    "slots": [
+      "background",
+      "ascent1",
+      "ascent2",
+      "cap"
+    ],
+    "defaults": {
+      "background": "#b8b8b8",
+      "ascent2_from_ascent1": "derived-by-algorithm",
+      "fixed_blacks": [
+        "#000000",
+        "#0a0a0a",
+        "#0b0b0b",
+        "#111827"
+      ],
+      "exclude": [
+        "none"
+      ]
+    },
+    "mapping_strategy": "by_fill_color"
+  },
+  "icons": {
+    "tablets": {
+      "name": "Tablets",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "ascent2",
+          "default_color": "#d6d6d6",
+          "change_if_provided": true,
+          "map_by_color": "#d6d6d6"
+        }
+      ]
+    },
+    "capsules": {
+      "name": "Capsules",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "ascent2",
+          "default_color": "#d6d6d6",
+          "change_if_provided": true,
+          "map_by_color": "#d6d6d6"
+        }
+      ]
+    },
+    "sachets": {
+      "name": "Sachets",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "ascent2",
+          "default_color": "#d6d6d6",
+          "change_if_provided": true,
+          "map_by_color": "#d6d6d6"
+        }
+      ]
+    },
+    "gum": {
+      "name": "Gum",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "ascent2",
+          "default_color": "#d6d6d6",
+          "change_if_provided": true,
+          "map_by_color": "#d6d6d6"
+        }
+      ]
+    },
+    "inserts": {
+      "name": "Inserts",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        }
+      ]
+    },
+    "ointment": {
+      "name": "Ointment",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "cap",
+          "default_color": "#7dd3fc",
+          "change_if_provided": true,
+          "map_by_color": "#7dd3fc"
+        }
+      ]
+    },
+    "lotion": {
+      "name": "Lotion",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "ascent2",
+          "default_color": "#d6d6d6",
+          "change_if_provided": true,
+          "map_by_color": "#d6d6d6"
+        },
+        {
+          "role": "cap",
+          "default_color": "#7dd3fc",
+          "change_if_provided": true,
+          "map_by_color": "#7dd3fc"
+        }
+      ]
+    },
+    "patches": {
+      "name": "Patches",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        }
+      ]
+    },
+    "syrup": {
+      "name": "Syrup",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "cap",
+          "default_color": "#e37b35",
+          "change_if_provided": true,
+          "map_by_color": "#e37b35"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        }
+      ]
+    },
+    "mouthwash": {
+      "name": "Mouthwash",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "ascent2",
+          "default_color": "#d6d6d6",
+          "change_if_provided": true,
+          "map_by_color": "#d6d6d6"
+        },
+        {
+          "role": "cap",
+          "default_color": "#7dd3fc",
+          "change_if_provided": true,
+          "map_by_color": "#7dd3fc"
+        }
+      ]
+    },
+    "sprays": {
+      "name": "Sprays",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#ffffff",
+          "change_if_provided": true,
+          "map_by_color": "#ffffff"
+        },
+        {
+          "role": "cap",
+          "default_color": "#7dd3fc",
+          "change_if_provided": true,
+          "map_by_color": "#7dd3fc"
+        }
+      ]
+    },
+    "drops": {
+      "name": "Drops",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        },
+        {
+          "role": "ascent1",
+          "default_color": "#009dff",
+          "change_if_provided": true,
+          "map_by_color": "#009dff"
+        }
+      ]
+    },
+    "injections": {
+      "name": "Injections",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        }
+      ]
+    },
+    "inhalers": {
+      "name": "Inhalers",
+      "slots": [
+        {
+          "role": "background",
+          "default_color": "#b8b8b8",
+          "apply_default_if_ai_missing": true,
+          "map_by_color": "#009dff"
+        }
+      ]
+    }
+  }
+}
