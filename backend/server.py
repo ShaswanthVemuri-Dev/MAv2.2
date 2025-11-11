@@ -1075,6 +1075,7 @@ GENERAL REMINDERS
         )
         message = completion.choices[0].message
         response_text = message.content or "{}"
+        logging.info("[ai_full_response] %s", response_text)
         try:
             return json.loads(response_text)
         except Exception:
